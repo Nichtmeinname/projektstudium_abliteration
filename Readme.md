@@ -9,6 +9,8 @@ Die verwendeten Modelle stammen von Huggingface. Um die Programme durchzuführen
 Huggingface Account benötigt. Außerdem muss eine Accesstoken bei Huggingface gesetzt und
 anschließend als Umgebungsvariable gesetzt werden (https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hftoken).
 
+Verwendete Python-Version: 3.11
+
 Verwendete Modelle:
 - Qwen2.5 mit 3B Parametern
 - Qwen2.5 mit 7B Parametern
