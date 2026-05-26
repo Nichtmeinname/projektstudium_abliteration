@@ -1,7 +1,8 @@
 import time
 
 from garak.probes.base import Probe
-from transformers import AutoTokenizer
+
+from code.classes.LLMCustomGenerator import LLMCustomGenerator
 
 
 class ParquetProbe(Probe):
@@ -9,7 +10,7 @@ class ParquetProbe(Probe):
     A probe that generates responses based on a list of prompts.
     """
 
-    def __init__(self, prompts):
+    def __init__(self, prompts: list):
         """
         Constructor for the ParquetProbe class.
         :param prompts: A list of prompts.
@@ -17,7 +18,7 @@ class ParquetProbe(Probe):
         super().__init__()
         self.prompts = prompts
 
-    def probe(self, generator):
+    def probe(self, generator: LLMCustomGenerator):
         """
         This function generates responses based on a list of prompts.
         :param generator: The llm generator to generate responses from.
@@ -26,7 +27,7 @@ class ParquetProbe(Probe):
         results = []
         times_per_prompt = []
         tokens = []
-        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        tokenizer = generator.tokenizer
 
         print(f"Beginning with Prompting with Seed {generator.seed}...")
         start_all_prompts = time.time()
@@ -34,7 +35,7 @@ class ParquetProbe(Probe):
         for prompt in self.prompts:
             start_prompt = time.time()
             print(f"({num}/{len(self.prompts)}) Prompting: ", prompt)
-            response = generator.generate(prompt)[0]
+            response = generator.generate(prompt)
             results.append({
                 "prompt": prompt,
                 "response": response

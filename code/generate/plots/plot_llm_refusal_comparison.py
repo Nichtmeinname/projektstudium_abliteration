@@ -7,17 +7,17 @@ import numpy as np
 import pandas as pd
 
 CONFIG = {
-    "llama3.2:1b (harmful)": [
-        "../../../data/responses/llama3.2/harmful_prompts_ollama_llama3.2_seed_42.csv"
+    "qwen2.5-3B (harmful)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "llama3.1:8b (harmful)": [
-        "../../../data/responses/llama3.1/harmful_prompts_ollama_llama3.1_seed_42.csv"
+    "qwen2.5-7B (harmful)": [
+        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ],
-    "llama3.2:1b (harmless)": [
-        "../../../data/responses/llama3.2/harmless_prompts_ollama_llama3.2_seed_42.csv"
+    "qwen2.5-3B (harmless)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "llama3.1:8b (harmless)": [
-        "../../../data/responses/llama3.1/harmless_prompts_ollama_llama3.1_seed_42.csv"
+    "qwen2.5-7B (harmless)": [
+        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/harmless_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ]
 }
 
