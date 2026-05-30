@@ -31,7 +31,7 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
     login(access_token)
 
     # Load the prompts and put it into a list.
-    config = Config("Qwen", model)
+    config = Config(model.split("/")[0], model)
     prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=config.seed, instructions_only=True)
 
     # Define the generator, probe and detector.
