@@ -12,8 +12,7 @@ def main():
         dataset_type,
         f"../../../../data/responses/{model}/",
         f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
-        model,
-        seed
+        model
     )
 
 

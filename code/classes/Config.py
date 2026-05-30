@@ -8,4 +8,5 @@ class Config:
     n_train: int = 128
     n_test: int = 100
     n_val: int = 32
+    seed: int = 42
     four_bit_quantization: bool = False

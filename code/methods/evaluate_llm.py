@@ -13,17 +13,15 @@ from code.classes.RefusalDetector import RefusalDetector
 from data.prompts.dataset.load_prompts import load_prompts
 
 
-def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, model: str, seed: int):
+def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, model: str):
     """
     Evaluate and creates responses from given prompts and a model. Then saves it in a csv file.
     :param harm_type: The harm type of the prompts (harmful or harmless).
     :param save_location_path: The location to save the csv file.
     :param save_file_name: The csv filename.
     :param model: The model to use.
-    :param seed: The seed for the model.
     :return: A list of times per prompt, the time for all prompts and the tokens for all prompts + responses.
     """
-    random.seed(seed)
     # Set huggingface access token for faster downloads.
     access_token = os.getenv("HF_TOKEN", None)
 
@@ -34,10 +32,10 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
 
     # Load the prompts and put it into a list.
     config = Config("Qwen", model)
-    prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=seed, instructions_only=True)
+    prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=config.seed, instructions_only=True)
 
     # Define the generator, probe and detector.
-    generator = LLMCustomGenerator(model_name=model, seed=seed, set_four_bit_quantisation=config.four_bit_quantization)
+    generator = LLMCustomGenerator(model_name=model, seed=config.seed, set_four_bit_quantisation=config.four_bit_quantization)
     probe = ParquetProbe(prompts=prompts)
 
     # Test all prompts and generate the responses.
