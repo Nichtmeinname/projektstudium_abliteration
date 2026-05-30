@@ -1,4 +1,4 @@
-from code.methods.create_responses_csv import create_responses_csv
+from code.methods.evaluate_llm import evaluate_llm
 
 
 def main():
@@ -8,13 +8,12 @@ def main():
     dataset_type = "harmless"
 
     # Create response from the original model
-    create_responses_csv(
-        f"../../../../data/prompts/{dataset_type}/test-00000-of-00001.parquet",
+    evaluate_llm(
+        dataset_type,
         f"../../../../data/responses/{model}/",
         f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
         model,
-        seed,
-        False
+        seed
     )
 
 
