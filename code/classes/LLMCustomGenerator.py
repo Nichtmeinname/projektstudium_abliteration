@@ -3,7 +3,7 @@ import random
 import numpy as np
 import torch
 from garak.generators.base import Generator
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 from code.methods.setup_device import setup_device
 
@@ -13,9 +13,11 @@ class LLMCustomGenerator(Generator):
     Garak Generator to generate messages from huggingface models.
     """
 
-    def __init__(self, model_name, seed=42):
+    def __init__(self, model_name, seed=42, set_four_bit_quantisation=False):
         """
         Constructor for LLMCustomGenerator class.
+        :param seed: The seed to use.
+        :param set_four_bit_quantisation: True, if 4 Bit Quantization is needed. False otherwise.
         :param model_name: The model to generate responses from.
         """
         random.seed(seed)
@@ -23,11 +25,20 @@ class LLMCustomGenerator(Generator):
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
 
+        # 4-bit Quantisierung konfigurieren
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True
+        )
+
         self.seed = seed
         self.device = setup_device()
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
+            quantization_config=bnb_config if set_four_bit_quantisation else None,
             dtype=torch.float16,
             device_map=self.device
         )

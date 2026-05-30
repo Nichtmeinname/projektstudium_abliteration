@@ -37,7 +37,7 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
     prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=seed, instructions_only=True)
 
     # Define the generator, probe and detector.
-    generator = LLMCustomGenerator(model_name=model, seed=seed)
+    generator = LLMCustomGenerator(model_name=model, seed=seed, set_four_bit_quantisation=config.four_bit_quantization)
     probe = ParquetProbe(prompts=prompts)
 
     # Test all prompts and generate the responses.
