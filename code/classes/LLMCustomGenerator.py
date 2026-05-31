@@ -1,3 +1,4 @@
+import math
 import random
 
 import numpy as np
@@ -50,7 +51,10 @@ class LLMCustomGenerator:
 
         self.seed = seed
         self.device = setup_device()
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name,
+            padding_side="left"
+        )
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             quantization_config=bnb_config if set_four_bit_quantisation else None,
@@ -62,47 +66,97 @@ class LLMCustomGenerator:
         self.model.requires_grad_(False)
         torch.set_grad_enabled(False)
 
-    def generate(self, prompt):
+    def generate_multiple(self, prompts: list, batch_size=32):
         """
-        Generate responses from models with a given prompt using torch and transformers library.
-        :param prompt: The prompt to generate responses from.
-        :return: The response from the prompt.
+        Generate responses for multiple prompts using batched inference.
+
+        Parameters
+        ----------
+        prompts : list[str]
+            List of prompts to process.
+
+        batch_size : int
+            Number of prompts processed simultaneously.
+
+        Returns
+        -------
+        list[dict]
         """
-        messages = [
-            {"role": "user", "content": prompt}
-        ]
 
-        text = self.tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
-        )
+        all_responses = []
+        n_batches = math.ceil(len(prompts) / batch_size)
+        num_of_current_batch = 1
 
-        inputs = self.tokenizer(text, return_tensors="pt").to(self.device)
+        print(f"Beginning with Prompting with Seed {self.seed} using batch size {batch_size}...")
+        for i in range(0, len(prompts), batch_size):
 
-        with torch.inference_mode():
-            outputs = self.model.generate(
-                **inputs,
-                max_new_tokens=400,
-                temperature=0.7,
-                do_sample=True
-            )
+            current_batch = prompts[i:i + batch_size]
+            print(f"({num_of_current_batch}/{n_batches}) Aktueller Batch:")
+            num_of_current_batch += 1
 
-        generated_tokens = outputs[0][inputs["input_ids"].shape[1]:]
+            texts = []
 
-        response = self.tokenizer.decode(
-            generated_tokens,
-            skip_special_tokens=True
-        )
+            for prompt in current_batch:
+                print(f"    Prompt: {prompt}")
+                messages = [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
 
-        # GPU Cleanup
-        del outputs
-        del inputs
-        del generated_tokens
+                text = self.tokenizer.apply_chat_template(
+                    messages,
+                    tokenize=False,
+                    add_generation_prompt=True
+                )
 
-        torch.cuda.empty_cache()
+                texts.append(text)
 
-        return response
+            inputs = self.tokenizer(
+                texts,
+                return_tensors="pt",
+                padding=True,
+                truncation=True
+            ).to(self.device)
+
+            input_lengths = [
+                len(ids)
+                for ids in inputs["input_ids"]
+            ]
+
+            with torch.inference_mode():
+
+                outputs = self.model.generate(
+                    **inputs,
+                    max_new_tokens=400,
+                    temperature=0.7,
+                    do_sample=True,
+                    pad_token_id=self.tokenizer.eos_token_id
+                )
+
+            for prompt, output_ids, input_length in zip(
+                    current_batch,
+                    outputs,
+                    input_lengths
+            ):
+                generated_tokens = output_ids[input_length:]
+
+                response = self.tokenizer.decode(
+                    generated_tokens,
+                    skip_special_tokens=True
+                ).strip()
+
+                all_responses.append({
+                    "prompt": prompt,
+                    "response": response
+                })
+
+            del inputs
+            del outputs
+            torch.cuda.empty_cache()
+
+        return all_responses
 
     def tokenize_prompt(self, prompt):
         formatted_prompt = QWEN_CHAT_TEMPLATE.format(instruction=prompt)

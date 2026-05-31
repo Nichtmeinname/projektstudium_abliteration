@@ -9,10 +9,10 @@ def main():
 
     # Create response from the original model
     evaluate_llm(
-        dataset_type,
-        f"../../../../data/responses/{model}/",
-        f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
-        model
+        harm_type=dataset_type,
+        save_location_path=f"../../../../data/responses/{model}/",
+        save_file_name=f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
+        model=model
     )
 
 
