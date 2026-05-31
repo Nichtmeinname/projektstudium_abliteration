@@ -1,11 +1,9 @@
 import time
 
-from garak.probes.base import Probe
-
 from code.classes.LLMCustomGenerator import LLMCustomGenerator
 
 
-class ParquetProbe(Probe):
+class PromptProbe:
     """
     A probe that generates responses based on a list of prompts.
     """

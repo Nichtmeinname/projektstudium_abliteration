@@ -2,15 +2,30 @@ import random
 
 import numpy as np
 import torch
-from garak.generators.base import Generator
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 from code.methods.setup_device import setup_device
 
+SAMPLE_SYSTEM_PROMPT = """You are a helpful assistant."""
 
-class LLMCustomGenerator(Generator):
+QWEN_CHAT_TEMPLATE_WITH_SYSTEM = """<|im_start|>system
+{system}<|im_end|>
+<|im_start|>user
+{instruction}<|im_end|>
+<|im_start|>assistant
+"""
+
+QWEN_CHAT_TEMPLATE = """<|im_start|>user
+{instruction}<|im_end|>
+<|im_start|>assistant
+"""
+
+QWEN_REFUSAL_TOKS = [40, 2121]  # ['I', 'As']
+
+
+class LLMCustomGenerator:
     """
-    Garak Generator to generate messages from huggingface models.
+    Generator to generate messages from huggingface models.
     """
 
     def __init__(self, model_name, seed=42, set_four_bit_quantisation=False):
@@ -41,17 +56,16 @@ class LLMCustomGenerator(Generator):
             quantization_config=bnb_config if set_four_bit_quantisation else None,
             dtype=torch.float16,
             device_map=self.device
-        )
+        ).eval()
 
         self.model.generation_config.pad_token_id = self.tokenizer.eos_token_id
-        self.model.eval()
+        self.model.requires_grad_(False)
         torch.set_grad_enabled(False)
 
-    def generate(self, prompt, **kwargs):
+    def generate(self, prompt):
         """
         Generate responses from models with a given prompt using torch and transformers library.
         :param prompt: The prompt to generate responses from.
-        :param kwargs: The keyword arguments to use for generating the responses.
         :return: The response from the prompt.
         """
         messages = [
@@ -89,3 +103,11 @@ class LLMCustomGenerator(Generator):
         torch.cuda.empty_cache()
 
         return response
+
+    def tokenize_prompt(self, prompt):
+        formatted_prompt = QWEN_CHAT_TEMPLATE.format(instruction=prompt)
+        inputs = self.tokenizer(formatted_prompt, return_tensors="pt").to(self.device)
+        return inputs
+
+    def get_eoi_toks(self):
+        return self.tokenizer.encode(QWEN_CHAT_TEMPLATE.split("{instruction}")[-1])

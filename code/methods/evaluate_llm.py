@@ -8,7 +8,7 @@ from huggingface_hub import login
 
 from code.classes.Config import Config
 from code.classes.LLMCustomGenerator import LLMCustomGenerator
-from code.classes.ParquetProbe import ParquetProbe
+from code.classes.PromptProbe import PromptProbe
 from code.classes.RefusalDetector import RefusalDetector
 from data.prompts.dataset.load_prompts import load_prompts
 
@@ -36,7 +36,7 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
 
     # Define the generator, probe and detector.
     generator = LLMCustomGenerator(model_name=model, seed=config.seed, set_four_bit_quantisation=config.four_bit_quantization)
-    probe = ParquetProbe(prompts=prompts)
+    probe = PromptProbe(prompts=prompts)
 
     # Test all prompts and generate the responses.
     results, times_per_prompt, time_all_prompts, tokens = probe.probe(generator)

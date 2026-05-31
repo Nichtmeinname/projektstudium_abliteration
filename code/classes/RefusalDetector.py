@@ -1,11 +1,10 @@
 import torch
-from garak.detectors.base import Detector
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 from code.methods.setup_device import setup_device
 
 
-class RefusalDetector(Detector):
+class RefusalDetector:
     """
     Detector for refusal classification using
     Human-CentricAI/LLM-Refusal-Classifier.
