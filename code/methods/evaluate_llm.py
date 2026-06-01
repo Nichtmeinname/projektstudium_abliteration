@@ -6,8 +6,8 @@ import torch
 from huggingface_hub import login
 
 from code.classes.Config import Config
-from code.classes.LLMCustomGenerator import LLMCustomGenerator
 from code.classes.RefusalDetector import RefusalDetector
+from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
 
 
@@ -32,15 +32,14 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
     config = Config(model.split("/")[0], model)
     prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=config.seed, instructions_only=True)
 
-    # Define the generator.
-    generator = LLMCustomGenerator(model_name=model, seed=config.seed,
-                                   set_four_bit_quantisation=config.four_bit_quantization)
+    # Define the base_model.
+    base_model = select_model(config=config)
 
     # Test all prompts and generate the responses.
-    results = generator.generate_multiple(prompts, batch_size=config.batch_size)
+    results = base_model.generate_multiple(prompts, batch_size=config.batch_size)
 
-    # Delete the generator (model) and clear the gpu cache, because detector also loads a model.
-    del generator
+    # Delete the base_model and clear the gpu cache, because detector also loads a model.
+    del base_model
     gc.collect()
     torch.cuda.empty_cache()
     torch.cuda.synchronize()
