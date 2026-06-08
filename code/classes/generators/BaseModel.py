@@ -51,7 +51,7 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def tokenize_prompt(self, prompt: str):
+    def tokenize_prompt(self, prompts: list):
         pass
 
     @abstractmethod
@@ -71,5 +71,13 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def register_forward_hook_on_layer(self, hook, layer_idx):
+    def get_attn_modules(self):
+        pass
+
+    @abstractmethod
+    def get_mlp_modules(self):
+        pass
+
+    @abstractmethod
+    def get_refusal_toks(self):
         pass

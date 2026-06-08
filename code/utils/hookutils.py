@@ -3,6 +3,8 @@ import functools
 from typing import List, Tuple, Callable
 
 import torch
+from jaxtyping import Float
+from torch import Tensor
 
 
 @contextlib.contextmanager
@@ -50,3 +52,45 @@ def add_hooks(
     finally:
         for h in handles:
             h.remove()
+
+
+def get_direction_ablation_input_pre_hook(direction: Tensor):
+    def hook_fn(module, input):
+        nonlocal direction
+
+        if isinstance(input, tuple):
+            activation: Float[Tensor, "batch_size seq_len d_model"] = input[0]
+        else:
+            activation: Float[Tensor, "batch_size seq_len d_model"] = input
+
+        direction = direction / (direction.norm(dim=-1, keepdim=True) + 1e-8)
+        direction = direction.to(activation)
+        activation -= (activation @ direction).unsqueeze(-1) * direction
+
+        if isinstance(input, tuple):
+            return (activation, *input[1:])
+        else:
+            return activation
+
+    return hook_fn
+
+
+def get_direction_ablation_output_hook(direction: Tensor):
+    def hook_fn(module, input, output):
+        nonlocal direction
+
+        if isinstance(output, tuple):
+            activation: Float[Tensor, "batch_size seq_len d_model"] = output[0]
+        else:
+            activation: Float[Tensor, "batch_size seq_len d_model"] = output
+
+        direction = direction / (direction.norm(dim=-1, keepdim=True) + 1e-8)
+        direction = direction.to(activation)
+        activation -= (activation @ direction).unsqueeze(-1) * direction
+
+        if isinstance(output, tuple):
+            return (activation, *output[1:])
+        else:
+            return activation
+
+    return hook_fn

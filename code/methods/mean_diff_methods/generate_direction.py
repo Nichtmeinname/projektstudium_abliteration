@@ -5,6 +5,7 @@ import torch
 from jaxtyping import Float
 from torch import Tensor
 
+from code.classes.Config import Config
 from code.classes.generators.BaseModel import BaseModel
 from code.utils.hookutils import add_hooks
 
@@ -53,7 +54,7 @@ def get_mean_activations_pre_hook(layer: int, cache: Float[Tensor, "pos layer d_
     return hook_fn
 
 
-def get_mean_activations(model: BaseModel, prompts: list):
+def get_mean_activations(config: Config, model: BaseModel, prompts: list):
     """
     Computes mean activations across multiple prompts for all
     transformer layers of a language model.
@@ -68,6 +69,8 @@ def get_mean_activations(model: BaseModel, prompts: list):
 
     Parameters
     ----------
+    config: The config.
+
     model : QwenLLMModel
         Generator object containing the model, tokenizer,
         and helper functions.
@@ -104,8 +107,8 @@ def get_mean_activations(model: BaseModel, prompts: list):
                       get_mean_activations_pre_hook(layer=layer, cache=mean_activations, n_samples=n_samples,
                                                     positions=positions)) for layer in range(n_layers)]
 
-    for prompt in prompts:
-        input = model.tokenize_prompt(prompt)
+    for i in range(0, len(prompts), config.batch_size):
+        input = model.tokenize_prompt(prompts[i:i + config.batch_size])
 
         with add_hooks(module_forward_pre_hooks=fwd_pre_hooks, module_forward_hooks=[]):
             model.model(
@@ -116,18 +119,19 @@ def get_mean_activations(model: BaseModel, prompts: list):
     return mean_activations
 
 
-def get_mean_diff(model: BaseModel, harmful_train: list, harmless_train: list):
-    mean_activations_harmful = get_mean_activations(model, harmful_train)
-    mean_activations_harmless = get_mean_activations(model, harmless_train)
+def get_mean_diff(config: Config, model: BaseModel, harmful_train: list, harmless_train: list):
+    mean_activations_harmful = get_mean_activations(config, model, harmful_train)
+    mean_activations_harmless = get_mean_activations(config, model, harmless_train)
 
     mean_diff: Float[Tensor, "n_positions n_layers d_model"] = mean_activations_harmful - mean_activations_harmless
 
     return mean_diff
 
 
-def generate_direction(model: BaseModel, harmful_train: list, harmless_train: list, path_to_mean_diff_dir: str):
+def generate_direction(config: Config, model: BaseModel, harmful_train: list, harmless_train: list, path_to_mean_diff_dir: str):
     """
     Generate mean diffs between harmful and harmless.
+    :param config: The config.
     :param model: The BaseModel with the model to calculate mean diffs.
     :param harmful_train: The harmful train set.
     :param harmless_train: The harmless train set.
@@ -137,7 +141,7 @@ def generate_direction(model: BaseModel, harmful_train: list, harmless_train: li
     if not os.path.exists(path_to_mean_diff_dir):
         os.makedirs(path_to_mean_diff_dir)
 
-    mean_diffs = get_mean_diff(model, harmful_train, harmless_train)
+    mean_diffs = get_mean_diff(config, model, harmful_train, harmless_train)
 
     assert mean_diffs.shape == (len(model.get_eoi_toks()), model.model.config.num_hidden_layers,
                                 model.model.config.hidden_size)

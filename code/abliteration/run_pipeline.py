@@ -50,7 +50,7 @@ def run_pipeline(model_path: str):
     pos, layer, direction = select_most_effective_refusal_direction(config, model, harmful_val, harmless_val,
                                                                     mean_diffs)
 
-    print(pos, layer, direction)
+    print(f"Found best refusal direction in token position {pos} and layer {layer}: ", direction)
 
 
 if __name__ == "__main__":

@@ -145,9 +145,14 @@ class QwenLLMModel(BaseModel):
 
         return all_responses
 
-    def tokenize_prompt(self, prompt: str):
-        formatted_prompt = QWEN_CHAT_TEMPLATE.format(instruction=prompt)
-        inputs = self.tokenizer(formatted_prompt, return_tensors="pt").to(self.device)
+    def tokenize_prompt(self, prompts: list):
+        formatted_prompt = [QWEN_CHAT_TEMPLATE.format(instruction=prompt) for prompt in prompts]
+        inputs = self.tokenizer(
+            formatted_prompt,
+            padding=True,
+            truncation=False,
+            return_tensors="pt"
+        ).to(self.device)
         return inputs
 
     def get_eoi_toks(self):
@@ -162,5 +167,11 @@ class QwenLLMModel(BaseModel):
     def get_hidden_size(self):
         return self.model.config.hidden_size
 
-    def register_forward_hook_on_layer(self, hook, layer_idx):
-        return self.get_layers()[layer_idx].register_forward_hook(hook)
+    def get_attn_modules(self):
+        return torch.nn.ModuleList([layer.self_attn for layer in self.get_layers()])
+
+    def get_mlp_modules(self):
+        return torch.nn.ModuleList([layer.mlp for layer in self.get_layers()])
+
+    def get_refusal_toks(self):
+        return [40, 2121]
