@@ -80,7 +80,7 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
         if not math.isnan(rate):
             layer_scores[pos_idx, layer_idx] = rate
 
-    # Bester Layer = niedrigste Ablehnungsrate nach Abliteration
+    # Best layer = lowest refusal after abliteration
     best_layer = max(layer_scores, key=layer_scores.get)
     print(f"    Bester Pos/Layer: {best_layer} (Ablehnungsrate: {layer_scores[best_layer]:.2f})")
 
