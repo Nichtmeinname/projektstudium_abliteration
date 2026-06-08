@@ -45,12 +45,12 @@ def run_pipeline(model_path: str):
     print("1. Start generating mean diff between harmful and harmless train prompts...")
     mean_diffs = generate_mean_diff(config, model, harmful_train, harmless_train)
 
-    print("Generation of mean diff succeeded.")
+    print("    Generation of mean diff succeeded.")
     print("2. Select the most effective refusal direction...")
     pos, layer, direction = select_most_effective_refusal_direction(config, model, harmful_val, harmless_val,
                                                                     mean_diffs)
 
-    print(f"Found best refusal direction in token position {pos} and layer {layer}: ", direction)
+    print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
 
 
 if __name__ == "__main__":
