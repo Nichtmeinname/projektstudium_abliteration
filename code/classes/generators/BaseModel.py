@@ -69,3 +69,7 @@ class BaseModel(ABC):
     @abstractmethod
     def get_hidden_size(self):
         pass
+
+    @abstractmethod
+    def register_forward_hook_on_layer(self, hook, layer_idx):
+        pass

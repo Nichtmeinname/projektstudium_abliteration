@@ -17,7 +17,7 @@ def generate_mean_diff(config: Config, model: BaseModel, harmful_train: list, ha
     :param harmless_train: The harmless train.
     :return: The mean differences between the harmful train and harmless train.
     """
-    directions_dir = "../../../data/generated_directions"
+    directions_dir = "../../data/runs/generated_directions"
     if not os.path.exists(directions_dir):
         os.makedirs(directions_dir)
 

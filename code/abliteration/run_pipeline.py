@@ -4,6 +4,8 @@ import os
 from huggingface_hub import login
 
 from code.classes.Config import Config
+from code.methods.find_best_direction.select_most_effective_refusal_direction import \
+    select_most_effective_refusal_direction
 from code.methods.mean_diff_methods.generate_mean_diff import generate_mean_diff
 from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
@@ -44,6 +46,11 @@ def run_pipeline(model_path: str):
     mean_diffs = generate_mean_diff(config, model, harmful_train, harmless_train)
 
     print("Generation of mean diff succeeded.")
+    print("2. Select the most effective refusal direction...")
+    pos, layer, direction = select_most_effective_refusal_direction(config, model, harmful_val, harmless_val,
+                                                                    mean_diffs)
+
+    print(pos, layer, direction)
 
 
 if __name__ == "__main__":

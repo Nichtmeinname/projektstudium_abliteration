@@ -161,3 +161,6 @@ class QwenLLMModel(BaseModel):
 
     def get_hidden_size(self):
         return self.model.config.hidden_size
+
+    def register_forward_hook_on_layer(self, hook, layer_idx):
+        return self.get_layers()[layer_idx].register_forward_hook(hook)
