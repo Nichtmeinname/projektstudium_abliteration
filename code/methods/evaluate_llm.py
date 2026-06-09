@@ -3,12 +3,10 @@ import os
 
 import pandas as pd
 import torch
-from huggingface_hub import login
 
 from code.classes.Config import Config
 from code.classes.RefusalDetector import RefusalDetector
 from code.classes.generators.BaseModel import BaseModel
-from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
 
 
