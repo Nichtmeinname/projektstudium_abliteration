@@ -7,39 +7,30 @@ from huggingface_hub import login
 
 from code.classes.Config import Config
 from code.classes.RefusalDetector import RefusalDetector
+from code.classes.generators.BaseModel import BaseModel
 from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
 
 
-def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, model: str):
+def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, model_base: BaseModel, config: Config):
     """
     Evaluate and creates responses from given prompts and a model. Then saves it in a csv file.
+    :param config: The config to use.
     :param harm_type: The harm type of the prompts (harmful or harmless).
     :param save_location_path: The location to save the csv file.
     :param save_file_name: The csv filename.
-    :param model: The model to use.
+    :param model_base: The model to use.
     :return: A list of times per prompt, the time for all prompts and the tokens for all prompts + responses.
     """
-    # Set huggingface access token for faster downloads.
-    access_token = os.getenv("HF_TOKEN", None)
-
-    if access_token is None:
-        raise ValueError("Please set HF_TOKEN environment variable for huggingface faster download.")
-
-    login(access_token)
 
     # Load the prompts and put it into a list.
-    config = Config(model.split("/")[0], model)
     prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=config.seed, instructions_only=True)
 
-    # Define the base_model.
-    base_model = select_model(config=config)
-
     # Test all prompts and generate the responses.
-    results = base_model.generate_multiple(prompts, batch_size=config.batch_size)
+    results = model_base.generate_multiple(prompts, batch_size=config.batch_size)
 
-    # Delete the base_model and clear the gpu cache, because detector also loads a model.
-    del base_model
+    # Delete the model_base and clear the gpu cache, because detector also loads a model.
+    del model_base
     gc.collect()
     torch.cuda.empty_cache()
     torch.cuda.synchronize()
