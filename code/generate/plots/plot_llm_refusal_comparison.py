@@ -24,6 +24,12 @@ CONFIG = {
     ],
     "qwen2.5-3B-abliterated (harmless)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    ],
+    "qwen2.5-7B-abliterated (harmful)": [
+        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
+    ],
+    "qwen2.5-7B-abliterated (harmless)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ]
 }
 
