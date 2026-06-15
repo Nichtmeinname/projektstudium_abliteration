@@ -23,10 +23,6 @@ def modify_tensor_norm_preserved(
 
         del direction_gpu  # cleanup
 
-        # Transpose here to convert from safetensors convention
-        # Handle Shapes: We want the "Output" dimension to be the last dimension for projection.
-        # Intervention Vector lives in the Output Space.
-
         # Case A: Standard Linear [Out, In] -> Transpose to [In, Out]
         if W_rank == 2:
             W_working = W_gpu.T
