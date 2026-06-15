@@ -41,3 +41,8 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
     if not os.path.exists(save_location_path):
         os.makedirs(save_location_path)
     pd.DataFrame(evaluated).to_csv(save_location_path + save_file_name, index=False)
+
+    del detector
+    gc.collect()
+    torch.cuda.empty_cache()
+    torch.cuda.synchronize()

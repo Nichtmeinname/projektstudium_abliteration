@@ -175,3 +175,7 @@ class QwenLLMModel(BaseModel):
 
     def get_refusal_toks(self):
         return [40, 2121]
+
+    def set_state_dict(self, state_dict):
+        self.model.load_state_dict(state_dict)
+        self.model.eval()

@@ -81,3 +81,7 @@ class BaseModel(ABC):
     @abstractmethod
     def get_refusal_toks(self):
         pass
+
+    @abstractmethod
+    def set_state_dict(self, state_dict):
+        pass

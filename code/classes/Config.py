@@ -9,5 +9,5 @@ class Config:
     n_test: int = 100
     n_val: int = 32
     seed: int = 42
-    four_bit_quantization: bool = True
+    four_bit_quantization: bool = False
     batch_size: int = 32

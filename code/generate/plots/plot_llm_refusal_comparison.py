@@ -18,6 +18,12 @@ CONFIG = {
     ],
     "qwen2.5-7B (harmless)": [
         "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/harmless_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
+    ],
+    "qwen2.5-3B-abliterated (harmful)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    ],
+    "qwen2.5-3B-abliterated (harmless)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ]
 }
 
@@ -57,7 +63,7 @@ def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, outpu
     n_types = len(all_types)
 
     x = np.arange(n_types)
-    bar_width = 0.2
+    bar_width = 0.1
     offsets = np.linspace(
         -(n_llms - 1) / 2 * bar_width,
         (n_llms - 1) / 2 * bar_width,
