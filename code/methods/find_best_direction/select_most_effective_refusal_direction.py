@@ -72,7 +72,7 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
     n_pos, n_layer, _ = mean_diffs.shape
     layer_scores = {}
     for pos_idx, layer_idx in product(range(-n_pos, 0), range(n_layer)):
-        print(f"Testing position {pos_idx} and layer {layer_idx}.")
+        print(f"    Testing position {pos_idx} and layer {layer_idx}.")
         abliteration_direction = mean_diffs[pos_idx, layer_idx]
         rate = evaluate_pos_layer(
             config, model_base, abliteration_direction, harmful_val + harmless_val
