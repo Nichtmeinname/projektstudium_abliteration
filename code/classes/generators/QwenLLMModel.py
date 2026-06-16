@@ -145,10 +145,10 @@ class QwenLLMModel(BaseModel):
 
         return all_responses
 
-    def tokenize_prompt(self, prompts: list):
-        formatted_prompt = [QWEN_CHAT_TEMPLATE.format(instruction=prompt) for prompt in prompts]
+    def tokenize_prompts(self, prompts: list):
+        formatted_prompts = [QWEN_CHAT_TEMPLATE.format(instruction=prompt) for prompt in prompts]
         inputs = self.tokenizer(
-            formatted_prompt,
+            formatted_prompts,
             padding=True,
             truncation=False,
             return_tensors="pt"

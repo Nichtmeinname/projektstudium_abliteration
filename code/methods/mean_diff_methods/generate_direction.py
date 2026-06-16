@@ -108,7 +108,7 @@ def get_mean_activations(config: Config, model: BaseModel, prompts: list):
                                                     positions=positions)) for layer in range(n_layers)]
 
     for i in range(0, len(prompts), config.batch_size):
-        input = model.tokenize_prompt(prompts[i:i + config.batch_size])
+        input = model.tokenize_prompts(prompts[i:i + config.batch_size])
 
         with add_hooks(module_forward_pre_hooks=fwd_pre_hooks, module_forward_hooks=[]):
             model.model(

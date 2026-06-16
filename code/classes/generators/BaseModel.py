@@ -51,7 +51,7 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def tokenize_prompt(self, prompts: list):
+    def tokenize_prompts(self, prompts: list):
         pass
 
     @abstractmethod

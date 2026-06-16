@@ -38,7 +38,7 @@ def get_refusal_scores(config: Config, model_base: BaseModel, prompts: list, fwd
     refusal_scores = torch.zeros(len(prompts), device=model_base.device)
 
     for i in range(0, len(prompts), config.batch_size):
-        tokenized_instructions = model_base.tokenize_prompt(prompts=prompts[i:i + config.batch_size])
+        tokenized_instructions = model_base.tokenize_prompts(prompts=prompts[i:i + config.batch_size])
 
         with add_hooks(module_forward_pre_hooks=fwd_pre_hooks, module_forward_hooks=fwd_hooks):
             logits = model_base.model(
