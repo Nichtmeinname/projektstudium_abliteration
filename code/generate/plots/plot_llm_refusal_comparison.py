@@ -19,17 +19,17 @@ CONFIG = {
     "qwen2.5-7B (harmless)": [
         "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/harmless_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated (harmful)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    "qwen2.5-3B-abliterated_norm_preserving (harmful)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    "qwen2.5-3B-abliterated_norm_preserving (harmless)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-7B-abliterated (harmful)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
+    "qwen2.5-7B-abliterated_norm_preserving (harmful)": [
+        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-7B-abliterated (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    "qwen2.5-7B-abliterated_norm_preserving (harmless)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ]
 }
 

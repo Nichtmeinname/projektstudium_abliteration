@@ -179,3 +179,15 @@ class QwenLLMModel(BaseModel):
     def set_state_dict(self, state_dict):
         self.model.load_state_dict(state_dict)
         self.model.eval()
+
+    def get_attn_q_proj_weight(self, layer):
+        return self.get_layers()[layer].self_attn.q_proj.weight
+
+    def set_attn_q_proj_weight(self, weight, layer):
+        self.get_layers()[layer].self_attn.q_proj.weight = weight
+
+    def get_mlp_down_proj_weight(self, layer):
+        return self.get_layers()[layer].mlp.down_proj.weight
+
+    def set_mlp_down_proj_weight(self, weight, layer):
+        self.get_layers()[layer].mlp.down_proj.weight = weight

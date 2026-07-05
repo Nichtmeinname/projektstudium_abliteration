@@ -85,3 +85,19 @@ class BaseModel(ABC):
     @abstractmethod
     def set_state_dict(self, state_dict):
         pass
+
+    @abstractmethod
+    def get_attn_q_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_attn_q_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def get_mlp_down_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_mlp_down_proj_weight(self, weight, layer):
+        pass

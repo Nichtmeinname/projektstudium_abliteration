@@ -8,19 +8,22 @@ from code.methods.evaluate_llm import evaluate_llm
 from code.methods.find_best_direction.select_most_effective_refusal_direction import \
     select_most_effective_refusal_direction
 from code.methods.mean_diff_methods.generate_mean_diff import generate_mean_diff
-from code.methods.modify_weights.apply_abliteration import apply_abliteration
+from code.methods.modify_weights.apply_abliteration import apply_abliteration_norm_preserving, \
+    apply_abliteration_projected, apply_abliteration_standard
 from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
 
 
-def parse_arguments() -> str:
+def parse_arguments() -> tuple[str, str]:
     """Parse model path argument from command line."""
     parser = argparse.ArgumentParser(description="Parse model path as argument.")
     parser.add_argument('--model', type=str, required=True, help='Huggingface model path.')
-    return parser.parse_args().model
+    parser.add_argument('--method', type=str, required=True,
+                        help='Abliteration method in (standard, norm or projected).')
+    return parser.parse_args().model, parser.parse_args().method
 
 
-def run_pipeline(model_path: str):
+def run_pipeline(model_path: str, method: str):
     config = Config(model_alias=model_path.split("/")[-1], model_path=model_path)
     print("Model: ", model_path)
 
@@ -55,9 +58,21 @@ def run_pipeline(model_path: str):
     print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
 
     print("3. Apply abliteration and save models state dict...")
-    state_dict = apply_abliteration(config=config,
-                                    model_base=model_base,
-                                    refusal_direction=direction)
+    if method in "norm preserving":
+        state_dict = apply_abliteration_norm_preserving(config=config,
+                                                        model_base=model_base,
+                                                        refusal_direction=direction,
+                                                        method=method)
+    elif method in "projected abliteration":
+        state_dict = apply_abliteration_projected(config=config,
+                                                  model_base=model_base,
+                                                  refusal_direction=direction,
+                                                  method=method)
+    else:
+        state_dict = apply_abliteration_standard(config=config,
+                                                 model_base=model_base,
+                                                 refusal_direction=direction,
+                                                 method=method)
 
     dataset_type = "harmful"
     model_base.set_state_dict(state_dict)
@@ -65,7 +80,7 @@ def run_pipeline(model_path: str):
 
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../data/responses/Qwen/{config.model_alias}-abliteration/",
+        save_location_path=f"../../data/responses/Qwen/{config.model_alias}-abliteration/{method}/",
         save_file_name=f"{dataset_type}_prompts_{config.model_alias}_seed_{config.seed}.csv",
         model_base=model_base,
         config=config
@@ -76,7 +91,7 @@ def run_pipeline(model_path: str):
 
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../data/responses/Qwen/{config.model_alias}-abliteration/",
+        save_location_path=f"../../data/responses/Qwen/{config.model_alias}-abliteration/{method}/",
         save_file_name=f"{dataset_type}_prompts_{config.model_alias}_seed_{config.seed}.csv",
         model_base=model_base,
         config=config
@@ -84,5 +99,5 @@ def run_pipeline(model_path: str):
 
 
 if __name__ == "__main__":
-    model_ = parse_arguments()
-    run_pipeline(model_)
+    model_, method_ = parse_arguments()
+    run_pipeline(model_, method_)

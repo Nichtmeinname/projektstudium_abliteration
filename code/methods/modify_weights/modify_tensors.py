@@ -8,7 +8,8 @@ def modify_tensor_norm_preserved(
 ) -> torch.Tensor:
     """
     Modify weight tensor by ablating intervention direction while preserving row norms.
-    Returns a plain tensor (not a Parameter).
+
+    :returns: Returns a plain tensor (not a Parameter).
     """
     original_dtype = W.dtype
 
@@ -75,3 +76,25 @@ def modify_tensor_norm_preserved(
         torch.cuda.synchronize()
 
     return result.detach().clone()
+
+
+def modify_tensor_projected(
+        W: torch.Tensor, direction: torch.Tensor, device, scale_factor: float = 1.0,
+) -> torch.Tensor:
+    """
+    Modify weight tensor by ablating intervention direction while removing only the mechanistically relevant
+    components of the refusal direction by orthogonalizing the refusal direction against the harmless direction.
+
+    :returns: Returns a plain tensor (not a Parameter).
+    """
+
+
+def modify_tensor_standard(
+        W: torch.Tensor, direction: torch.Tensor, device, scale_factor: float = 1.0,
+) -> torch.Tensor:
+    """
+    Modify weight tensor by ablating intervention direction while the mean difference then applies a projection matrix
+    to mathematically subtract or zero out this directional component from the model's weight matrices.
+
+    :returns: Returns a plain tensor (not a Parameter).
+    """
