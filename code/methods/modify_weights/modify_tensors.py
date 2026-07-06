@@ -4,12 +4,35 @@ import torch
 
 
 def modify_tensor_norm_preserved(
-        W: torch.Tensor, direction: torch.Tensor, device, scale_factor: float = 1.0,
+        W: torch.Tensor,
+        direction: torch.Tensor,
+        device,
+        scale_factor: float = 1.0
 ) -> torch.Tensor:
     """
+    Norm preserving Abliteration.
+
     Modify weight tensor by ablating intervention direction while preserving row norms.
 
-    :returns: Returns a plain tensor (not a Parameter).
+   Parameters
+   ----------
+   W : torch.Tensor
+       Weight tensor of shape [Out, In] or [Experts, Out, In].
+
+   direction : torch.Tensor
+       Intervention direction.
+
+   device :
+       CUDA or CPU device.
+
+   scale_factor : float
+       Strength of the intervention.
+       1.0 removes the complete projection.
+
+   Returns
+   -------
+   torch.Tensor
+       Modified weight tensor.
     """
     original_dtype = W.dtype
 
@@ -79,7 +102,10 @@ def modify_tensor_norm_preserved(
 
 
 def modify_tensor_projected(
-        W: torch.Tensor, direction: torch.Tensor, device, scale_factor: float = 1.0,
+        W: torch.Tensor,
+        direction: torch.Tensor,
+        device,
+        scale_factor: float = 1.0
 ) -> torch.Tensor:
     """
     Modify weight tensor by ablating intervention direction while removing only the mechanistically relevant
@@ -90,11 +116,102 @@ def modify_tensor_projected(
 
 
 def modify_tensor_standard(
-        W: torch.Tensor, direction: torch.Tensor, device, scale_factor: float = 1.0,
+        W: torch.Tensor,
+        direction: torch.Tensor,
+        device,
+        scale_factor: float = 1.0
 ) -> torch.Tensor:
     """
-    Modify weight tensor by ablating intervention direction while the mean difference then applies a projection matrix
-    to mathematically subtract or zero out this directional component from the model's weight matrices.
+   Standard Abliteration.
 
-    :returns: Returns a plain tensor (not a Parameter).
-    """
+   Removes the projection of each weight vector onto the intervention
+   direction without preserving the original vector norm.
+
+   Parameters
+   ----------
+   W : torch.Tensor
+       Weight tensor of shape [Out, In] or [Experts, Out, In].
+
+   direction : torch.Tensor
+       Intervention direction.
+
+   device :
+       CUDA or CPU device.
+
+   scale_factor : float
+       Strength of the intervention.
+       1.0 removes the complete projection.
+
+   Returns
+   -------
+   torch.Tensor
+       Modified weight tensor.
+   """
+    original_dtype = W.dtype
+
+    with torch.no_grad():
+
+        W_gpu = W.to(device, dtype=torch.float64, non_blocking=True)
+        direction_gpu = direction.to(device, dtype=torch.float64, non_blocking=True)
+
+        # Normalize intervention direction
+        direction_normalized = torch.nn.functional.normalize(
+            direction_gpu,
+            dim=0
+        )
+
+        del direction_gpu
+
+        W_rank = W_gpu.dim()
+
+        # Convert to [in_features, out_features]
+        if W_rank == 2:
+            W_working = W_gpu.T
+
+        elif W_rank == 3:
+            W_working = W_gpu.permute(0, 2, 1)
+
+        else:
+            raise ValueError(
+                f"Unsupported tensor shape {W_gpu.shape}"
+            )
+
+        del W_gpu
+
+        # Compute projection onto intervention direction
+        projection = torch.matmul(
+            W_working,
+            direction_normalized
+        )
+
+        # Remove projection
+        W_modified = (
+                W_working
+                - scale_factor
+                * projection.unsqueeze(-1)
+                * direction_normalized
+        )
+
+        # Restore original tensor layout
+        if W_rank == 2:
+            result = W_modified.T
+
+        else:
+            result = W_modified.permute(0, 2, 1)
+
+        result = result.to(
+            device,
+            dtype=original_dtype,
+            non_blocking=True
+        )
+
+        del direction_normalized
+        del projection
+        del W_working
+        del W_modified
+
+        gc.collect()
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+
+    return result.detach().clone()
