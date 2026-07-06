@@ -6,36 +6,6 @@ import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
 
-CONFIG = {
-    "qwen2.5-3B (harmful)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-7B (harmful)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-3B (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-7B (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/harmless_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-3B-abliterated_norm_preserving (harmful)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-3B-abliterated_norm_preserving (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-7B-abliterated_norm_preserving (harmful)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-7B-abliterated_norm_preserving (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ]
-}
-
-OUTPUT_FILE_PATH = "../../../data/images/model_comparison/"
-OUTPUT_FILE_NAME = "llm_response_type_comparison.png"
-
 
 def load_and_aggregate(file_paths: list[str]):
     """Alle CSV-Dateien eines LLMs einlesen und response_type zusammenzählen."""
@@ -57,7 +27,7 @@ def load_and_aggregate(file_paths: list[str]):
     return combined["response_type"].value_counts().sort_index()
 
 
-def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, output_file_name: str):
+def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, output_file_name: str, title: str):
     """Gruppiertes Balkendiagramm für alle LLMs und response_types erstellen."""
 
     # Alle vorkommenden response_types sammeln
@@ -110,7 +80,7 @@ def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, outpu
     ax.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     ax.set_xlabel("Response Type", fontsize=13, labelpad=8)
     ax.set_ylabel("Anzahl", fontsize=13, labelpad=8)
-    ax.set_title("Vergleich der Response Types pro LLM", fontsize=15, fontweight="bold", pad=14)
+    ax.set_title(title, fontsize=15, fontweight="bold", pad=14)
     ax.legend(title="LLM", fontsize=11, title_fontsize=11)
     ax.spines[["top", "right"]].set_visible(False)
     ax.grid(axis="y", linestyle="--", alpha=0.5)
@@ -123,19 +93,3 @@ def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, outpu
     plt.savefig(save_location, dpi=300)
     print(f"\nDiagramm gespeichert: {save_location}")
     plt.show()
-
-
-def main():
-    print("Lade CSV-Dateien …")
-    aggregated = {}
-    for llm_name, paths in CONFIG.items():
-        print(f"\n  {llm_name}")
-        counts = load_and_aggregate(paths)
-        aggregated[llm_name] = counts
-        print(counts.to_string())
-
-    plot_refusal_scores(aggregated, OUTPUT_FILE_PATH, OUTPUT_FILE_NAME)
-
-
-if __name__ == "__main__":
-    main()
