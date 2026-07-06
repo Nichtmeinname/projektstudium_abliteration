@@ -101,20 +101,6 @@ def modify_tensor_norm_preserved(
     return result.detach().clone()
 
 
-def modify_tensor_projected(
-        W: torch.Tensor,
-        direction: torch.Tensor,
-        device,
-        scale_factor: float = 1.0
-) -> torch.Tensor:
-    """
-    Modify weight tensor by ablating intervention direction while removing only the mechanistically relevant
-    components of the refusal direction by orthogonalizing the refusal direction against the harmless direction.
-
-    :returns: Returns a plain tensor (not a Parameter).
-    """
-
-
 def modify_tensor_standard(
         W: torch.Tensor,
         direction: torch.Tensor,
@@ -150,65 +136,57 @@ def modify_tensor_standard(
     original_dtype = W.dtype
 
     with torch.no_grad():
+        # Move tensors for computation
+        W_gpu = W.to(device, dtype=torch.float32, non_blocking=True)
+        W_rank = W.dim()
+        intervention_dir_gpu = direction.to(device, dtype=torch.float32, non_blocking=True)
 
-        W_gpu = W.to(device, dtype=torch.float64, non_blocking=True)
-        direction_gpu = direction.to(device, dtype=torch.float64, non_blocking=True)
+        # Ensure intervention_dir is a 1-dimensional tensor
+        if intervention_dir_gpu.dim() > 1:
+            intervention_dir_gpu = intervention_dir_gpu.view(-1)
 
         # Normalize intervention direction
-        direction_normalized = torch.nn.functional.normalize(
-            direction_gpu,
-            dim=0
-        )
+        intervention_normalized = torch.nn.functional.normalize(intervention_dir_gpu, dim=0)
 
-        del direction_gpu
+        del intervention_dir_gpu  # cleanup
 
-        W_rank = W_gpu.dim()
+        # Transpose here to convert from safetensors convention
+        # Handle Shapes: We want the "Output" dimension to be the last dimension for projection.
+        # Intervention Vector lives in the Output Space.
 
-        # Convert to [in_features, out_features]
+        # Case A: Standard Linear [Out, In] -> Transpose to [In, Out]
         if W_rank == 2:
             W_working = W_gpu.T
-
+        # Case B: Fused Experts [Experts, Out, In] -> Permute to [Experts, In, Out]
+        # ex: GPT-OSS-20b
         elif W_rank == 3:
             W_working = W_gpu.permute(0, 2, 1)
-
         else:
-            raise ValueError(
-                f"Unsupported tensor shape {W_gpu.shape}"
-            )
+            print(f"Warning: Unsupported tensor shape {W_gpu.shape} - Skipping ablation.")
+            return W
 
-        del W_gpu
+        del W_gpu  # cleanup
 
-        # Compute projection onto intervention direction
-        projection = torch.matmul(
-            W_working,
-            direction_normalized
-        )
+        # Apply ablation
+        # Compute dot product of each row with intervention direction
+        # [..., Out] @ [Out] -> [...,]
+        projection = torch.matmul(W_working, intervention_normalized)
 
-        # Remove projection
-        W_modified = (
-                W_working
-                - scale_factor
-                * projection.unsqueeze(-1)
-                * direction_normalized
-        )
+        # Subtract the projection
+        # [...,] -> [..., 1] * [Out] -> [..., Out]
+        W_working -= scale_factor * (projection.unsqueeze(-1) * intervention_normalized)
 
-        # Restore original tensor layout
+        # Transpose here to return safetensors convention
         if W_rank == 2:
-            result = W_modified.T
+            result = W_working.T
+        elif W_rank == 3:
+            result = W_working.permute(0, 2, 1)
 
-        else:
-            result = W_modified.permute(0, 2, 1)
+        # Convert back to original dtype and CPU
+        result = result.to(device, dtype=original_dtype, non_blocking=True)
 
-        result = result.to(
-            device,
-            dtype=original_dtype,
-            non_blocking=True
-        )
-
-        del direction_normalized
-        del projection
-        del W_working
-        del W_modified
+        # Cleanup
+        del intervention_normalized, projection, W_working
 
         gc.collect()
         torch.cuda.empty_cache()

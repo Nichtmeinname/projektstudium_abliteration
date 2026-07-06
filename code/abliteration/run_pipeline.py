@@ -9,7 +9,7 @@ from code.methods.find_best_direction.select_most_effective_refusal_direction im
     select_most_effective_refusal_direction
 from code.methods.mean_diff_methods.generate_mean_diff import generate_mean_diff
 from code.methods.modify_weights.apply_abliteration import apply_abliteration_norm_preserving, \
-    apply_abliteration_projected, apply_abliteration_standard
+    apply_abliteration_standard
 from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
 
@@ -63,11 +63,6 @@ def run_pipeline(model_path: str, method: str):
                                                         model_base=model_base,
                                                         refusal_direction=direction,
                                                         method=method)
-    elif method in "projected abliteration":
-        state_dict = apply_abliteration_projected(config=config,
-                                                  model_base=model_base,
-                                                  refusal_direction=direction,
-                                                  method=method)
     else:
         state_dict = apply_abliteration_standard(config=config,
                                                  model_base=model_base,
