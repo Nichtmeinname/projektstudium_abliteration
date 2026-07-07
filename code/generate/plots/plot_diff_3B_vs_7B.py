@@ -44,7 +44,7 @@ def main():
         aggregated,
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
-        "Vergleich Qwen 3B vs 7B Abliterated Models"
+        "Vergleich Qwen 3B vs 7B Abliterated Modelle"
     )
 
 
