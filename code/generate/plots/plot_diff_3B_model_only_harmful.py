@@ -4,25 +4,16 @@ CONFIG = {
     "qwen2.5-3B (harmful)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
     "qwen2.5-3B-abliterated - Standard (harmful)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/standard/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Standard (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/standard/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
     "qwen2.5-3B-abliterated - Norm Preserving (harmful)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
-    ],
-    "qwen2.5-3B-abliterated - Norm Preserving (harmless)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ]
 }
 
 OUTPUT_FILE_PATH = "../../../data/images/model_comparison/"
-OUTPUT_FILE_NAME = "without_with_abliteration_Qwen_3B_comparison.png"
+OUTPUT_FILE_NAME = "without_with_abliteration_Qwen_3B_only_harmful_comparison.png"
 
 
 def main():
@@ -38,7 +29,8 @@ def main():
         aggregated,
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
-        "Vergleich Qwen-3B-Instruct: ohne Abliteration vs. Abliteration-Methoden"
+        "Vergleich Qwen-3B-Instruct (nur harmful):\n ohne Abliteration vs. Abliteration-Methoden",
+        bar_width=0.2
     )
 
 

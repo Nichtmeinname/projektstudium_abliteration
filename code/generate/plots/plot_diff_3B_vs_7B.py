@@ -1,4 +1,4 @@
-from code.generate.plots.plot_llm_refusal_comparison import plot_refusal_scores, load_and_aggregate
+from code.generate.plots.plot_refusal_scores import plot_refusal_scores, load_and_aggregate
 
 CONFIG = {
     "qwen2.5-3B-abliterated - Norm Preserving (harmful)": [
