@@ -17,7 +17,8 @@ from data.prompts.dataset.load_prompts import load_prompts
 def parse_arguments() -> tuple[str, str]:
     """Parse model path argument from command line."""
     parser = argparse.ArgumentParser(description="Parse model path as argument.")
-    parser.add_argument('--model', type=str, required=True, help='Huggingface model path.')
+    parser.add_argument('--model', type=str, required=True,
+                        help='Huggingface model path e.g. Qwen/Qwen2.5-3B-Instruct.')
     parser.add_argument('--method', type=str, required=True,
                         help='Abliteration method in (standard or norm_preserving).')
     return parser.parse_args().model, parser.parse_args().method
