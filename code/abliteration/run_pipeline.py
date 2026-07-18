@@ -19,7 +19,7 @@ def parse_arguments() -> tuple[str, str]:
     parser = argparse.ArgumentParser(description="Parse model path as argument.")
     parser.add_argument('--model', type=str, required=True, help='Huggingface model path.')
     parser.add_argument('--method', type=str, required=True,
-                        help='Abliteration method in (standard, norm or projected).')
+                        help='Abliteration method in (standard or norm_preserving).')
     return parser.parse_args().model, parser.parse_args().method
 
 
@@ -58,16 +58,18 @@ def run_pipeline(model_path: str, method: str):
     print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
 
     print(f"3. Apply abliteration with method {method} and save models state dict...")
-    if method in "norm_preserving":
+    if method == "norm_preserving":
         state_dict = apply_abliteration_norm_preserving(config=config,
                                                         model_base=model_base,
                                                         refusal_direction=direction,
                                                         method=method)
-    else:
+    elif method == "standard":
         state_dict = apply_abliteration_standard(config=config,
                                                  model_base=model_base,
                                                  refusal_direction=direction,
                                                  method=method)
+    else:
+        raise ValueError(f"Method {method} is not supported.")
 
     dataset_type = "harmful"
     model_base.set_state_dict(state_dict)
