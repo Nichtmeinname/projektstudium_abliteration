@@ -27,12 +27,13 @@ def load_and_aggregate(file_paths: list[str]):
     return combined["response_type"].value_counts().sort_index()
 
 
-def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, output_file_name: str, title: str, bar_width: float = 0.1):
+def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, output_file_name: str, title: str,
+                        bar_width: float = 0.1):
     """Gruppiertes Balkendiagramm für alle LLMs und response_types erstellen."""
 
     # Alle vorkommenden response_types sammeln
-    all_types = ["No Refusal", "Refusal Unethical", "Disclaimer Unethical", "Refusal Capability",
-                 "Disclaimer Capability"]
+    all_types = ["No Refusal", "Disclaimer Unethical", "Disclaimer Capability", "Refusal Capability",
+                 "Refusal Unethical"]
 
     llm_names = list(data.keys())
     n_llms = len(llm_names)

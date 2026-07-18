@@ -1,13 +1,13 @@
 from code.generate.plots.plot_refusal_scores import load_and_aggregate, plot_refusal_scores
 
 CONFIG = {
-    "qwen2.5-3B (harmful)": [
+    "qwen2.5-3B (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Standard (harmful)": [
+    "qwen2.5-3B-abliterated - Standard (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/standard/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Norm Preserving (harmful)": [
+    "qwen2.5-3B-abliterated - Norm Preserving (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ]
 }
@@ -29,7 +29,9 @@ def main():
         aggregated,
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
-        "Vergleich Qwen-3B-Instruct (nur harmful):\n ohne Abliteration vs. Abliteration-Methoden",
+        "Vergleich Qwen-3B-Instruct (Unethische Anfragen):\n ohne Abliteration vs. Abliteration-Methoden\n n=" + str(
+            sum(aggregated[next(iter(aggregated))].values)
+        ) + " Anfragen",
         bar_width=0.2
     )
 

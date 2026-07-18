@@ -1,28 +1,28 @@
 from code.generate.plots.plot_refusal_scores import plot_refusal_scores, load_and_aggregate
 
 CONFIG = {
-    "qwen2.5-3B-abliterated - Norm Preserving (harmful)": [
+    "qwen2.5-3B-abliterated - Norm Preserving (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Norm Preserving (harmless)": [
+    "qwen2.5-3B-abliterated - Norm Preserving (Harmlose Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-7B-abliterated - Norm Preserving (harmful)": [
+    "qwen2.5-7B-abliterated - Norm Preserving (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-7B-abliterated - Norm Preserving (harmless)": [
+    "qwen2.5-7B-abliterated - Norm Preserving (Harmlose Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-7B-abliterated - Standard (harmful)": [
+    "qwen2.5-7B-abliterated - Standard (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/standard/harmful_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-7B-abliterated - Standard (harmless)": [
+    "qwen2.5-7B-abliterated - Standard (Harmlose Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-7B-Instruct-abliteration/standard/harmless_prompts_Qwen2.5-7B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Standard (harmful)": [
+    "qwen2.5-3B-abliterated - Standard (Unethische Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/standard/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Standard (harmless)": [
+    "qwen2.5-3B-abliterated - Standard (Harmlose Anfragen)": [
         "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/standard/harmless_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
     ]
 }
@@ -44,7 +44,9 @@ def main():
         aggregated,
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
-        "Vergleich Qwen 3B vs 7B Abliterated Modelle"
+        "Vergleich Qwen 3B vs 7B Abliterated Modelle\n n=" + str(
+            sum(aggregated[next(iter(aggregated))].values)
+        ) + " Anfragen"
     )
 
 
