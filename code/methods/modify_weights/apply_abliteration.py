@@ -1,4 +1,5 @@
 import os
+import time
 
 import torch
 
@@ -9,13 +10,15 @@ from code.methods.modify_weights.modify_tensors import modify_tensor_norm_preser
 
 def apply_abliteration_norm_preserving(config: Config, model_base: BaseModel, refusal_direction: torch.Tensor,
                                        method: str):
-    state_dict_file = f"../../data/runs/state_dicts/{config.model_alias}/abliteration_state_dict_{method}.pth"
-    if os.path.exists(state_dict_file):
-        return torch.load(state_dict_file)
+    model_dir = f"../../data/runs/state_dicts/{config.model_alias}/{config.model_alias}_abliterated_{method}"
+    if os.path.exists(model_dir):
+        model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
+        return
 
-    if not os.path.exists(os.path.dirname(state_dict_file)):
-        os.makedirs(os.path.dirname(state_dict_file))
+    if not os.path.exists(os.path.dirname(model_dir)):
+        os.makedirs(os.path.dirname(model_dir))
 
+    start_time = time.time()
     for layer in range(len(model_base.get_layers())):
         layer_attn_w_q_proj = model_base.get_attn_q_proj_weight(layer)
         model_base.set_attn_q_proj_weight(
@@ -41,20 +44,23 @@ def apply_abliteration_norm_preserving(config: Config, model_base: BaseModel, re
             layer=layer
         )
 
-    state_dict = model_base.model.state_dict()
-    torch.save(state_dict, state_dict_file)
+    end_time = time.time()
+    print("    Abliteration (tensor modifying) completed in " + str(end_time - start_time) + " seconds.")
 
-    return state_dict
+    model_base.save_model(model_dir)
+    model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
 
 
 def apply_abliteration_standard(config: Config, model_base: BaseModel, refusal_direction: torch.Tensor, method: str):
-    state_dict_file = f"../../data/runs/state_dicts/{config.model_alias}/abliteration_state_dict_{method}.pth"
-    if os.path.exists(state_dict_file):
-        return torch.load(state_dict_file)
+    model_dir = f"../../data/runs/models/{config.model_alias}/{config.model_alias}_abliterated_{method}"
+    if os.path.exists(model_dir):
+        model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
+        return
 
-    if not os.path.exists(os.path.dirname(state_dict_file)):
-        os.makedirs(os.path.dirname(state_dict_file))
+    if not os.path.exists(os.path.dirname(model_dir)):
+        os.makedirs(os.path.dirname(model_dir))
 
+    start_time = time.time()
     for layer in range(len(model_base.get_layers())):
         layer_attn_w_q_proj = model_base.get_attn_q_proj_weight(layer)
         model_base.set_attn_q_proj_weight(
@@ -80,7 +86,8 @@ def apply_abliteration_standard(config: Config, model_base: BaseModel, refusal_d
             layer=layer
         )
 
-    state_dict = model_base.model.state_dict()
-    torch.save(state_dict, state_dict_file)
+    end_time = time.time()
+    print("    Abliteration (tensor modifying) completed in " + str(end_time - start_time) + " seconds.")
 
-    return state_dict
+    model_base.save_model(model_dir)
+    model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)

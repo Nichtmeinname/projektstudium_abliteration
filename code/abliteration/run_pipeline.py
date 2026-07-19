@@ -27,6 +27,7 @@ def parse_arguments() -> tuple[str, str]:
 def run_pipeline(model_path: str, method: str):
     config = Config(model_alias=model_path.split("/")[-1], model_path=model_path)
     print("Model: ", model_path)
+    print("Method: ", method)
 
     # Set huggingface access token for faster downloads.
     access_token = os.getenv("HF_TOKEN", None)
@@ -35,7 +36,7 @@ def run_pipeline(model_path: str, method: str):
         raise ValueError("Please set HF_TOKEN environment variable for huggingface faster download.")
 
     login(access_token)
-    model_base = select_model(config)
+    model_base = select_model(config, abliteration_process=True)
 
     # Load lists of train and validation sets
     harmful_train = load_prompts(n_samples=config.n_train, harm_type="harmful",
@@ -60,25 +61,25 @@ def run_pipeline(model_path: str, method: str):
 
     print(f"3. Apply abliteration with method {method} and save models state dict...")
     if method == "norm_preserving":
-        state_dict = apply_abliteration_norm_preserving(config=config,
-                                                        model_base=model_base,
-                                                        refusal_direction=direction,
-                                                        method=method)
+        apply_abliteration_norm_preserving(config=config,
+                                           model_base=model_base,
+                                           refusal_direction=direction,
+                                           method=method)
     elif method == "standard":
-        state_dict = apply_abliteration_standard(config=config,
-                                                 model_base=model_base,
-                                                 refusal_direction=direction,
-                                                 method=method)
+        apply_abliteration_standard(config=config,
+                                    model_base=model_base,
+                                    refusal_direction=direction,
+                                    method=method)
     else:
         raise ValueError(f"Method {method} is not supported.")
 
+    quantization_used = "Quantization" if config.four_bit_quantization else "NoQuantization"
     dataset_type = "harmful"
-    model_base.set_state_dict(state_dict)
     print("4. Applied abliteration and evaluate on harmful prompts...")
 
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../data/responses/Qwen/{config.model_alias}-abliteration/{method}/",
+        save_location_path=f"../../data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/",
         save_file_name=f"{dataset_type}_prompts_{config.model_alias}_seed_{config.seed}.csv",
         model_base=model_base,
         config=config
@@ -89,7 +90,7 @@ def run_pipeline(model_path: str, method: str):
 
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../data/responses/Qwen/{config.model_alias}-abliteration/{method}/",
+        save_location_path=f"../../data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/",
         save_file_name=f"{dataset_type}_prompts_{config.model_alias}_seed_{config.seed}.csv",
         model_base=model_base,
         config=config

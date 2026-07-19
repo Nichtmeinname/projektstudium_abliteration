@@ -1,3 +1,4 @@
+import gc
 import math
 
 import torch
@@ -59,7 +60,7 @@ class QwenLLMModel(BaseModel):
 
         Parameters
         ----------
-        prompts : list[str]
+        prompts : list[str] or List[Dict[str, str]]
             List of prompts to process.
 
         batch_size : int
@@ -82,8 +83,12 @@ class QwenLLMModel(BaseModel):
             num_of_current_batch += 1
 
             texts = []
+            categories = []
 
             for prompt in current_batch:
+                if type(prompt) == dict:
+                    prompt, category = prompt["instruction"], prompt["category"]
+                    categories.append(category)
                 print(f"    Prompt: {prompt}")
                 messages = [
                     {
@@ -122,10 +127,14 @@ class QwenLLMModel(BaseModel):
                     pad_token_id=self.tokenizer.eos_token_id
                 )
 
-            for prompt, output_ids, input_length in zip(
+            if len(categories) == 0:
+                categories = ["null"] * batch_size
+
+            for prompt, output_ids, input_length, category in zip(
                     current_batch,
                     outputs,
-                    input_lengths
+                    input_lengths,
+                    categories
             ):
                 generated_tokens = output_ids[input_length:]
 
@@ -135,8 +144,9 @@ class QwenLLMModel(BaseModel):
                 ).strip()
 
                 all_responses.append({
-                    "prompt": prompt,
-                    "response": response
+                    "prompt": prompt["instruction"] if type(prompt) == dict else prompt,
+                    "response": response,
+                    "category": category
                 })
 
             del inputs
@@ -191,3 +201,16 @@ class QwenLLMModel(BaseModel):
 
     def set_mlp_down_proj_weight(self, weight, layer):
         self.get_layers()[layer].mlp.down_proj.weight = weight
+
+    def save_model(self, model_file: str):
+        self.model.save_pretrained(model_file, save_compressed=True)
+
+    def load_model(self, model_file: str, set_four_bit_quantization: bool = False):
+        print(f"    Memory before deleting Modell: {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB")
+        del self.model
+        gc.collect()
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+
+        self.model = self._load_model(model_file, set_four_bit_quantization)
+        print(f"    Memory after loading Modell: {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB")

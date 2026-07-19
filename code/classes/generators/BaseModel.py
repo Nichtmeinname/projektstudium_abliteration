@@ -20,6 +20,7 @@ class BaseModel(ABC):
         self.device = setup_device()
         self.tokenizer = self._load_tokenizer(model_name)
         self.model = self._load_model(model_name, set_four_bit_quantization)
+        self.set_four_bit_quantization = set_four_bit_quantization
 
     @abstractmethod
     def _load_tokenizer(self, model_name: str) -> AutoTokenizer:
@@ -100,4 +101,12 @@ class BaseModel(ABC):
 
     @abstractmethod
     def set_mlp_down_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def save_model(self, model_file: str):
+        pass
+
+    @abstractmethod
+    def load_model(self, model_file: str, set_four_bit_quantization: bool = False):
         pass
