@@ -33,11 +33,11 @@ Folgende Software wird benötigt:
 Folgende Hardware wird benötigt:
 
 - GPU
-    - 3B-Modelle benötigt 8 GB VRAM.
-    - 7B-Modelle benötigt 16 GB VRAM.
+    - 3B-Modelle benötigt min. 8 GB VRAM.
+    - 7B-Modelle benötigt min. 16 GB VRAM.
 - CPU
-    - 3B-Modelle benötigt 16 GB RAM.
-    - 7B-Modelle benötigt 32 GB RAM.
+    - 3B-Modelle benötigt min. 32 GB RAM.
+    - 7B-Modelle benötigt min. 64 GB RAM.
 
 ---
 

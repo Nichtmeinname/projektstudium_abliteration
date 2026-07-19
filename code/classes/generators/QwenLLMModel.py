@@ -1,6 +1,8 @@
 import gc
 import math
+import os
 
+import psutil
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
@@ -206,11 +208,21 @@ class QwenLLMModel(BaseModel):
         self.model.save_pretrained(model_file, save_compressed=True)
 
     def load_model(self, model_file: str, set_four_bit_quantization: bool = False):
-        print(f"    Memory before deleting Modell: {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB")
+        if torch.cuda.is_available():
+            print(f"    Memory (VRAM) before deleting model: {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB")
+        else:
+            ram = psutil.Process(os.getpid())
+            print(f"    RAM used before loading model: {ram.memory_info().rss / 1024 ** 3:.2f} GB")
+
         del self.model
         gc.collect()
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
 
         self.model = self._load_model(model_file, set_four_bit_quantization)
-        print(f"    Memory after loading Modell: {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB")
+
+        if torch.cuda.is_available():
+            print(f"    Memory (VRAM) after loading model: {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB")
+        else:
+            ram = psutil.Process(os.getpid())
+            print(f"    RAM used after loading model: {ram.memory_info().rss / 1024 ** 3:.2f} GB")
