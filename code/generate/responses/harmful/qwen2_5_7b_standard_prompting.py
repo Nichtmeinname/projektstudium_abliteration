@@ -1,6 +1,5 @@
 import os
 
-import torch
 from huggingface_hub import login
 
 from code.classes.Config import Config
@@ -18,23 +17,20 @@ def main():
     login(access_token)
 
     seed = 42
-    model = "Qwen/Qwen2.5-7B-Instruct"
-    model_name = model.split("/")[-1]
     dataset_type = "harmful"
+    model_dir = f"../../../../data/runs/models/Qwen2.5-3B-Instruct/Qwen2.5-3B-Instruct_abliterated_standard"
+    model_alias = model_dir.split("/")[-1]
 
     # Define the base_model.
-    config = Config(model_alias=model_name, model_path=model)
+    config = Config(model_alias=model_alias, model_path=model_dir)
     model_base = select_model(config=config)
-
-    # Load state dict.
-    state_dict_file = f"../../../../data/runs/state_dicts/{config.model_alias}/abliteration_state_dict_standard.pth"
-    model_base.set_state_dict(torch.load(state_dict_file))
+    quantization_used = "Quantization" if config.four_bit_quantization else "NoQuantization"
 
     # Create response from the original model
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../../../data/responses/{model}/",
-        save_file_name=f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
+        save_location_path=f"../../../../data/responses/Qwen/{config.model_alias}/{quantization_used}/",
+        save_file_name=f"{dataset_type}_prompts_seed_{seed}.csv",
         model_base=model_base,
         config=config
     )

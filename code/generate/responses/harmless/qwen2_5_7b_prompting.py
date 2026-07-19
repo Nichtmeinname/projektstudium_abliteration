@@ -24,11 +24,12 @@ def main():
     # Define the base_model.
     config = Config(model_alias=model_name, model_path=model)
     model_base = select_model(config=config)
+    quantization_used = "Quantization" if config.four_bit_quantization else "NoQuantization"
 
     # Create response from the original model
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../../../data/responses/{model}/",
+        save_location_path=f"../../../../data/responses/Qwen/{config.model_alias}/{quantization_used}/",
         save_file_name=f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
         model_base=model_base,
         config=config
