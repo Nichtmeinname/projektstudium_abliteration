@@ -80,7 +80,7 @@ def run_pipeline(model_path: str, method: str):
     evaluate_llm(
         harm_type=dataset_type,
         save_location_path=f"../../data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/",
-        save_file_name=f"{dataset_type}_prompts_{config.model_alias}_seed_{config.seed}.csv",
+        save_file_name=f"{dataset_type}_prompts_seed_{config.seed}.csv",
         model_base=model_base,
         config=config
     )
@@ -91,7 +91,7 @@ def run_pipeline(model_path: str, method: str):
     evaluate_llm(
         harm_type=dataset_type,
         save_location_path=f"../../data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/",
-        save_file_name=f"{dataset_type}_prompts_{config.model_alias}_seed_{config.seed}.csv",
+        save_file_name=f"{dataset_type}_prompts_seed_{config.seed}.csv",
         model_base=model_base,
         config=config
     )
