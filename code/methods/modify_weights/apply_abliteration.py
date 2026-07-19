@@ -10,7 +10,7 @@ from code.methods.modify_weights.modify_tensors import modify_tensor_norm_preser
 
 def apply_abliteration_norm_preserving(config: Config, model_base: BaseModel, refusal_direction: torch.Tensor,
                                        method: str):
-    model_dir = f"../../data/runs/state_dicts/{config.model_alias}/{config.model_alias}_abliterated_{method}"
+    model_dir = f"../../data/runs/models/{config.model_alias}/{config.model_alias}_abliterated_{method}"
     if os.path.exists(model_dir):
         model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
         return
