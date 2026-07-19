@@ -22,16 +22,10 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
     """
 
     # Load the prompts and put it into a list.
-    prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=config.seed, instructions_only=True)
+    prompts = load_prompts(n_samples=config.n_test, harm_type=harm_type, seed=config.seed, instructions_only=False)
 
     # Test all prompts and generate the responses.
     results = model_base.generate_multiple(prompts, batch_size=config.batch_size)
-
-    # Delete the model_base and clear the gpu cache, because detector also loads a model.
-    del model_base
-    gc.collect()
-    torch.cuda.empty_cache()
-    torch.cuda.synchronize()
 
     # Evaluate the responses with the detector.
     detector = RefusalDetector()
