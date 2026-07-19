@@ -30,7 +30,7 @@ def main():
     evaluate_llm(
         harm_type=dataset_type,
         save_location_path=f"../../../../data/responses/Qwen/{config.model_alias}/{quantization_used}/",
-        save_file_name=f"{dataset_type}_prompts_{model_name}_seed_{seed}.csv",
+        save_file_name=f"{dataset_type}_prompts_seed_{seed}.csv",
         model_base=model_base,
         config=config
     )
