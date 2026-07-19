@@ -59,7 +59,7 @@ def run_pipeline(model_path: str, method: str):
 
     print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
 
-    print(f"3. Apply abliteration with method {method} and save models state dict...")
+    print(f"3. Apply abliteration with method {method} and save compressed model...")
     if method == "norm_preserving":
         apply_abliteration_norm_preserving(config=config,
                                            model_base=model_base,
