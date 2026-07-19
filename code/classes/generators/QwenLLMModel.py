@@ -188,10 +188,6 @@ class QwenLLMModel(BaseModel):
     def get_refusal_toks(self):
         return [40, 2121]
 
-    def set_state_dict(self, state_dict):
-        self.model.load_state_dict(state_dict)
-        self.model.eval()
-
     def get_attn_q_proj_weight(self, layer):
         return self.get_layers()[layer].self_attn.q_proj.weight
 
@@ -206,6 +202,7 @@ class QwenLLMModel(BaseModel):
 
     def save_model(self, model_file: str):
         self.model.save_pretrained(model_file, save_compressed=True)
+        self.tokenizer.save_pretrained(model_file, save_compressed=True)
 
     def load_model(self, model_file: str, set_four_bit_quantization: bool = False):
         if torch.cuda.is_available():
@@ -215,10 +212,12 @@ class QwenLLMModel(BaseModel):
             print(f"    RAM used before loading model: {ram.memory_info().rss / 1024 ** 3:.2f} GB")
 
         del self.model
+        del self.tokenizer
         gc.collect()
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
 
+        self.tokenizer = self._load_tokenizer(model_file)
         self.model = self._load_model(model_file, set_four_bit_quantization)
 
         if torch.cuda.is_available():
