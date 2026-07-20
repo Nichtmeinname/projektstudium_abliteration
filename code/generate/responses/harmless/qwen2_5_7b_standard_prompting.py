@@ -19,7 +19,7 @@ def main():
 
     seed = 42
     dataset_type = "harmless"
-    model_dir = f"../../../../data/runs/models/Qwen2.5-3B-Instruct/Qwen2.5-3B-Instruct_abliterated_standard"
+    model_dir = f"../../../../data/runs/models/Qwen2.5-7B-Instruct/Qwen2.5-7B-Instruct_abliterated_standard"
     model_alias = model_dir.split("/")[-1]
 
     # Define the base_model.
