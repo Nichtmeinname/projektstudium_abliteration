@@ -1,6 +1,5 @@
 import os
 
-import torch
 from huggingface_hub import login
 
 from code.classes.Config import Config
