@@ -1,18 +1,18 @@
-from code.generate.plots.plot_refusal_scores import load_and_aggregate, plot_refusal_scores
+from code.generate.plots.method.plot_refusal_scores import load_and_aggregate, plot_refusal_scores
 
 CONFIG = {
     "qwen2.5-3B (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Standard (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/standard/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    "qwen2.5-3B-Abliterated - Standard (Unethische Anfragen)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv"
     ],
-    "qwen2.5-3B-abliterated - Norm Preserving (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct-abliteration/norm/harmful_prompts_Qwen2.5-3B-Instruct_seed_42.csv"
+    "qwen2.5-3B-Abliterated - Norm Preserving (Unethische Anfragen)": [
+        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_norm_preserving/Quantization/harmful_prompts_seed_42.csv"
     ]
 }
 
-OUTPUT_FILE_PATH = "../../../data/images/model_comparison/"
+OUTPUT_FILE_PATH = "../../../../data/images/model_comparison/"
 OUTPUT_FILE_NAME = "without_with_abliteration_Qwen_3B_only_harmful_comparison.png"
 
 
