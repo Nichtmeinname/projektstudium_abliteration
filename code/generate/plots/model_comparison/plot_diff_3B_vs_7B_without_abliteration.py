@@ -15,7 +15,7 @@ CONFIG = {
     ]
 }
 
-OUTPUT_FILE_PATH = "../../../../../data/images/model_comparison/"
+OUTPUT_FILE_PATH = "../../../../data/images/model_comparison/"
 OUTPUT_FILE_NAME = "3B_vs_7B_without_abliteration.png"
 
 

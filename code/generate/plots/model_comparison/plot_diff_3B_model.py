@@ -21,7 +21,7 @@ CONFIG = {
     ]
 }
 
-OUTPUT_FILE_PATH = "../../../../../data/images/model_comparison/"
+OUTPUT_FILE_PATH = "../../../../data/images/model_comparison/"
 OUTPUT_FILE_NAME = "without_with_abliteration_Qwen_3B_comparison.png"
 
 
