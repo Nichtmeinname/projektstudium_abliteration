@@ -2,17 +2,17 @@ from code.generate.plots.method.plot_refusal_scores import load_and_aggregate, p
 
 CONFIG = {
     "qwen2.5-7B (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
     "qwen2.5-7B-Abliterated - Norm Preserving (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_norm_preserving/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_norm_preserving/Quantization/harmful_prompts_seed_42.csv"
     ],
     "qwen2.5-7B-Abliterated - Standard (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv"
     ]
 }
 
-OUTPUT_FILE_PATH = "../../../../data/images/model_comparison/"
+OUTPUT_FILE_PATH = "../../../../../data/images/model_comparison/"
 OUTPUT_FILE_NAME = "without_with_abliteration_Qwen_7B_only_harmful_comparison.png"
 
 

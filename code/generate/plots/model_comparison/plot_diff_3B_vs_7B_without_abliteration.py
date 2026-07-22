@@ -2,20 +2,20 @@ from code.generate.plots.method.plot_refusal_scores import plot_refusal_scores, 
 
 CONFIG = {
     "qwen2.5-3B (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
     "qwen2.5-3B (Harmlose Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmless_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmless_prompts_seed_42.csv"
     ],
     "qwen2.5-7B (Unethische Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
     "qwen2.5-7B (Harmlose Anfragen)": [
-        "../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmless_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmless_prompts_seed_42.csv"
     ]
 }
 
-OUTPUT_FILE_PATH = "../../../../data/images/model_comparison/"
+OUTPUT_FILE_PATH = "../../../../../data/images/model_comparison/"
 OUTPUT_FILE_NAME = "3B_vs_7B_without_abliteration.png"
 
 
