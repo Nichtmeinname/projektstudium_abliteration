@@ -90,7 +90,7 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
 def select_most_effective_refusal_direction(config: Config, model_base: BaseModel,
                                             harmful_val: list, harmless_val: list,
                                             mean_diffs: Float[Tensor, "n_positions n_layers d_model"]):
-    direction_dir = "../../data/runs/selected_refusal_direction/" + config.model_alias
+    direction_dir = "data/runs/selected_refusal_direction/" + config.model_alias
     json_file_name = os.path.join(direction_dir, "direction_metadata.json")
     direction_file_name = os.path.join(direction_dir, "direction.pt")
     if not os.path.exists(direction_dir):

@@ -144,7 +144,7 @@ gestartet.
 ### Beispiel
 
 ```bash
-python code/abliteration/run_pipeline.py \
+python run_pipeline.py \
     --model Qwen/Qwen2.5-3B-Instruct \
     --method norm_preserving
 ```
@@ -152,7 +152,7 @@ python code/abliteration/run_pipeline.py \
 oder
 
 ```bash
-python code/abliteration/run_pipeline.py \
+python run_pipeline.py \
     --model Qwen/Qwen2.5-7B-Instruct \
     --method standard
 ```

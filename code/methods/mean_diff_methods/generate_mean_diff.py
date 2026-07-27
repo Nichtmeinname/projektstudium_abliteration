@@ -17,7 +17,7 @@ def generate_mean_diff(config: Config, model: BaseModel, harmful_train: list, ha
     :param harmless_train: The harmless train.
     :return: The mean differences between the harmful train and harmless train.
     """
-    directions_dir = "../../data/runs/generated_directions"
+    directions_dir = "data/runs/generated_directions"
     if not os.path.exists(directions_dir):
         os.makedirs(directions_dir)
 
@@ -25,7 +25,8 @@ def generate_mean_diff(config: Config, model: BaseModel, harmful_train: list, ha
     if os.path.exists(path_to_saved_mean_diffs):
         return torch.load(path_to_saved_mean_diffs)
 
-    mean_diffs = generate_direction(config, model, harmful_train, harmless_train, os.path.dirname(path_to_saved_mean_diffs))
+    mean_diffs = generate_direction(config, model, harmful_train, harmless_train,
+                                    os.path.dirname(path_to_saved_mean_diffs))
 
     torch.save(mean_diffs, path_to_saved_mean_diffs)
 
