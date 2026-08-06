@@ -6,6 +6,7 @@ from itertools import product
 
 import torch
 from jaxtyping import Float, Int
+from rich.progress import Progress
 from torch import Tensor
 
 from code.classes.Config import Config
@@ -68,18 +69,20 @@ def evaluate_pos_layer(config: Config, model_base: BaseModel, direction: Float[T
 
 
 def select_direction(config: Config, model_base: BaseModel, harmful_val: list, harmless_val: list,
-                     mean_diffs: Float[Tensor, "n_positions n_layers d_model"]):
+                     mean_diffs: Float[Tensor, "n_positions n_layers d_model"], progress: Progress):
     n_pos, n_layer, _ = mean_diffs.shape
     layer_scores = {}
+    task_select_best_direction = progress.add_task("Select best refusal direction...", total=(n_pos * n_layer))
     for pos_idx, layer_idx in product(range(-n_pos, 0), range(n_layer)):
-        print(f"    Testing position {pos_idx} and layer {layer_idx}.")
         abliteration_direction = mean_diffs[pos_idx, layer_idx]
         rate = evaluate_pos_layer(
             config, model_base, abliteration_direction, harmful_val + harmless_val
         )
         if not math.isnan(rate):
             layer_scores[pos_idx, layer_idx] = rate
+        progress.update(task_select_best_direction, advance=1)
 
+    progress.update(task_select_best_direction, total=(n_pos * n_layer))
     # Best layer = lowest refusal after abliteration
     best_layer = max(layer_scores, key=layer_scores.get)
     print(f"    Bester Pos/Layer: {best_layer} (Ablehnungsrate: {layer_scores[best_layer]:.2f})")
@@ -89,7 +92,8 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
 
 def select_most_effective_refusal_direction(config: Config, model_base: BaseModel,
                                             harmful_val: list, harmless_val: list,
-                                            mean_diffs: Float[Tensor, "n_positions n_layers d_model"]):
+                                            mean_diffs: Float[Tensor, "n_positions n_layers d_model"],
+                                            progress: Progress):
     direction_dir = "data/runs/selected_refusal_direction/" + config.model_alias
     json_file_name = os.path.join(direction_dir, "direction_metadata.json")
     direction_file_name = os.path.join(direction_dir, "direction.pt")
@@ -106,7 +110,8 @@ def select_most_effective_refusal_direction(config: Config, model_base: BaseMode
         model_base,
         harmful_val,
         harmless_val,
-        mean_diffs
+        mean_diffs,
+        progress
     )
 
     with open(json_file_name, "w") as f:

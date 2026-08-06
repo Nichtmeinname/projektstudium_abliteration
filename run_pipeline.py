@@ -2,6 +2,7 @@ import argparse
 import os
 
 from huggingface_hub import login
+from rich.progress import Progress
 
 from code.classes.Config import Config
 from code.methods.evaluate_llm import evaluate_llm
@@ -54,24 +55,27 @@ def run_pipeline(model_path: str, method: str):
 
     print("    Generation of mean diff succeeded.")
     print("2. Select the most effective refusal direction...")
-    pos, layer, direction = select_most_effective_refusal_direction(config, model_base, harmful_val, harmless_val,
-                                                                    mean_diffs)
+    with Progress() as progress:
+        pos, layer, direction = select_most_effective_refusal_direction(config, model_base, harmful_val, harmless_val,
+                                                                        mean_diffs, progress)
 
-    print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
+        print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
 
-    print(f"3. Apply abliteration with method {method} and save compressed model...")
-    if method == "norm_preserving":
-        apply_abliteration_norm_preserving(config=config,
-                                           model_base=model_base,
-                                           refusal_direction=direction,
-                                           method=method)
-    elif method == "standard":
-        apply_abliteration_standard(config=config,
-                                    model_base=model_base,
-                                    refusal_direction=direction,
-                                    method=method)
-    else:
-        raise ValueError(f"Method {method} is not supported.")
+        print(f"3. Apply abliteration with method {method} and save compressed model...")
+        if method == "norm_preserving":
+            apply_abliteration_norm_preserving(config=config,
+                                               model_base=model_base,
+                                               refusal_direction=direction,
+                                               method=method,
+                                               progress=progress)
+        elif method == "standard":
+            apply_abliteration_standard(config=config,
+                                        model_base=model_base,
+                                        refusal_direction=direction,
+                                        method=method,
+                                        progress=progress)
+        else:
+            raise ValueError(f"Method {method} is not supported.")
 
     quantization_used = "Quantization" if config.four_bit_quantization else "NoQuantization"
     dataset_type = "harmful"

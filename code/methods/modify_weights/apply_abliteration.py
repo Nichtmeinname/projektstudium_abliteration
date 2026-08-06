@@ -2,6 +2,7 @@ import os
 import time
 
 import torch
+from rich.progress import Progress
 
 from code.classes.Config import Config
 from code.classes.generators.BaseModel import BaseModel
@@ -9,7 +10,7 @@ from code.methods.modify_weights.modify_tensors import modify_tensor_norm_preser
 
 
 def apply_abliteration_norm_preserving(config: Config, model_base: BaseModel, refusal_direction: torch.Tensor,
-                                       method: str):
+                                       method: str, progress: Progress):
     model_dir = f"data/runs/models/{config.model_alias}/{config.model_alias}_abliterated_{method}"
     if os.path.exists(model_dir):
         model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
@@ -19,6 +20,7 @@ def apply_abliteration_norm_preserving(config: Config, model_base: BaseModel, re
         os.makedirs(os.path.dirname(model_dir))
 
     start_time = time.time()
+    task_modify_tensor = progress.add_task("Modifying tensors...", total=len(model_base.get_layers()))
     for layer in range(len(model_base.get_layers())):
         layer_attn_w_q_proj = model_base.get_attn_q_proj_weight(layer)
         model_base.set_attn_q_proj_weight(
@@ -44,14 +46,18 @@ def apply_abliteration_norm_preserving(config: Config, model_base: BaseModel, re
             layer=layer
         )
 
+        progress.update(task_modify_tensor, advance=1)
+
     end_time = time.time()
+    progress.update(task_modify_tensor, total=len(model_base.get_layers()))
     print("    Abliteration (tensor modifying) completed in " + str(end_time - start_time) + " seconds.")
 
     model_base.save_model(model_dir)
     model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
 
 
-def apply_abliteration_standard(config: Config, model_base: BaseModel, refusal_direction: torch.Tensor, method: str):
+def apply_abliteration_standard(config: Config, model_base: BaseModel, refusal_direction: torch.Tensor, method: str,
+                                progress: Progress):
     model_dir = f"data/runs/models/{config.model_alias}/{config.model_alias}_abliterated_{method}"
     if os.path.exists(model_dir):
         model_base.load_model(model_dir, set_four_bit_quantization=config.four_bit_quantization)
@@ -61,6 +67,7 @@ def apply_abliteration_standard(config: Config, model_base: BaseModel, refusal_d
         os.makedirs(os.path.dirname(model_dir))
 
     start_time = time.time()
+    task_modify_tensor = progress.add_task("Modifying tensors...", total=len(model_base.get_layers()))
     for layer in range(len(model_base.get_layers())):
         layer_attn_w_q_proj = model_base.get_attn_q_proj_weight(layer)
         model_base.set_attn_q_proj_weight(
@@ -86,7 +93,10 @@ def apply_abliteration_standard(config: Config, model_base: BaseModel, refusal_d
             layer=layer
         )
 
+        progress.update(task_modify_tensor, advance=1)
+
     end_time = time.time()
+    progress.update(task_modify_tensor, total=len(model_base.get_layers()))
     print("    Abliteration (tensor modifying) completed in " + str(end_time - start_time) + " seconds.")
 
     model_base.save_model(model_dir)
