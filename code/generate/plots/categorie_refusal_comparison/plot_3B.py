@@ -31,14 +31,14 @@ if __name__ == '__main__':
 
     heatmap_category_refusal_type(
         "Qwen2.5-3B-Instruct-Abliterated (Standard)",
-        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv",
+        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmful_prompts_seed_42.csv",
         "../../../../data/images/heatmap/category_refusal_type/Qwen2.5-3B-Instruct/",
         "harmful_Qwen2.5-3B-Instruct-Abliterated-Standard.png"
     )
 
     heatmap_category_refusal_type(
         "Qwen2.5-3B-Instruct-Abliterated (Standard)",
-        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/harmless_prompts_seed_42.csv",
+        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmless_prompts_seed_42.csv",
         "../../../../data/images/heatmap/category_refusal_type/Qwen2.5-3B-Instruct/",
         "harmless_Qwen2.5-3B-Instruct-Abliterated-Standard.png"
     )

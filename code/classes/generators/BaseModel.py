@@ -84,11 +84,35 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def get_attn_q_proj_weight(self, layer):
+    def get_self_attn_q_proj_weight(self, layer):
         pass
 
     @abstractmethod
-    def set_attn_q_proj_weight(self, weight, layer):
+    def set_self_attn_q_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def get_self_attn_k_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_self_attn_k_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def get_self_attn_v_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_self_attn_v_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def get_self_attn_o_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_self_attn_o_proj_weight(self, weight, layer):
         pass
 
     @abstractmethod
@@ -97,6 +121,22 @@ class BaseModel(ABC):
 
     @abstractmethod
     def set_mlp_down_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def get_mlp_gate_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_mlp_gate_proj_weight(self, weight, layer):
+        pass
+
+    @abstractmethod
+    def get_mlp_up_proj_weight(self, layer):
+        pass
+
+    @abstractmethod
+    def set_mlp_up_proj_weight(self, weight, layer):
         pass
 
     @abstractmethod

@@ -9,8 +9,8 @@ from code.methods.evaluate_llm import evaluate_llm
 from code.methods.find_best_direction.select_most_effective_refusal_direction import \
     select_most_effective_refusal_direction
 from code.methods.mean_diff_methods.generate_mean_diff import generate_mean_diff
-from code.methods.modify_weights.apply_abliteration import apply_abliteration_norm_preserving, \
-    apply_abliteration_standard
+from code.methods.modify_weights.apply_abliteration import apply_abliteration, get_modified_matrices
+from code.methods.modify_weights.modify_tensors import modify_tensor_norm_preserved, modify_tensor_standard
 from code.methods.select_model import select_model
 from data.prompts.dataset.load_prompts import load_prompts
 
@@ -59,31 +59,34 @@ def run_pipeline(model_path: str, method: str):
         pos, layer, direction = select_most_effective_refusal_direction(config, model_base, harmful_val, harmless_val,
                                                                         mean_diffs, progress)
 
-        print(f"    Found best refusal direction in token position {pos} and layer {layer}: ", direction)
+        print(f"    Found best refusal direction in token position {pos} and layer {layer}.")
 
         print(f"3. Apply abliteration with method {method} and save compressed model...")
         if method == "norm_preserving":
-            apply_abliteration_norm_preserving(config=config,
-                                               model_base=model_base,
-                                               refusal_direction=direction,
-                                               method=method,
-                                               progress=progress)
+            apply_abliteration(config=config,
+                               model_base=model_base,
+                               refusal_direction=direction,
+                               method=method,
+                               progress=progress,
+                               abliteration_method=modify_tensor_norm_preserved)
         elif method == "standard":
-            apply_abliteration_standard(config=config,
-                                        model_base=model_base,
-                                        refusal_direction=direction,
-                                        method=method,
-                                        progress=progress)
+            apply_abliteration(config=config,
+                               model_base=model_base,
+                               refusal_direction=direction,
+                               method=method,
+                               progress=progress,
+                               abliteration_method=modify_tensor_standard)
         else:
             raise ValueError(f"Method {method} is not supported.")
 
     quantization_used = "Quantization" if config.four_bit_quantization else "NoQuantization"
     dataset_type = "harmful"
+    modified_matrices = get_modified_matrices(config)
     print("4. Applied abliteration and evaluate on harmful prompts...")
 
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/",
+        save_location_path=f"data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/{modified_matrices}/",
         save_file_name=f"{dataset_type}_prompts_seed_{config.seed}.csv",
         model_base=model_base,
         config=config
@@ -94,7 +97,7 @@ def run_pipeline(model_path: str, method: str):
 
     evaluate_llm(
         harm_type=dataset_type,
-        save_location_path=f"../../data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/",
+        save_location_path=f"data/responses/Qwen/{config.model_alias}_abliterated_{method}/{quantization_used}/{modified_matrices}/",
         save_file_name=f"{dataset_type}_prompts_seed_{config.seed}.csv",
         model_base=model_base,
         config=config

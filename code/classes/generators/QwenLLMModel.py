@@ -188,17 +188,47 @@ class QwenLLMModel(BaseModel):
     def get_refusal_toks(self):
         return [40, 2121]
 
-    def get_attn_q_proj_weight(self, layer):
+    def get_self_attn_q_proj_weight(self, layer):
         return self.get_layers()[layer].self_attn.q_proj.weight
 
-    def set_attn_q_proj_weight(self, weight, layer):
+    def set_self_attn_q_proj_weight(self, weight, layer):
         self.get_layers()[layer].self_attn.q_proj.weight = weight
+
+    def get_self_attn_k_proj_weight(self, layer):
+        return self.get_layers()[layer].self_attn.k_proj.weight
+
+    def set_self_attn_k_proj_weight(self, weight, layer):
+        self.get_layers()[layer].self_attn.k_proj.weight = weight
+
+    def get_self_attn_v_proj_weight(self, layer):
+        return self.get_layers()[layer].self_attn.v_proj.weight
+
+    def set_self_attn_v_proj_weight(self, weight, layer):
+        self.get_layers()[layer].self_attn.v_proj.weight = weight
+
+    def get_self_attn_o_proj_weight(self, layer):
+        return self.get_layers()[layer].self_attn.o_proj.weight
+
+    def set_self_attn_o_proj_weight(self, weight, layer):
+        self.get_layers()[layer].self_attn.o_proj.weight = weight
 
     def get_mlp_down_proj_weight(self, layer):
         return self.get_layers()[layer].mlp.down_proj.weight
 
     def set_mlp_down_proj_weight(self, weight, layer):
         self.get_layers()[layer].mlp.down_proj.weight = weight
+
+    def get_mlp_gate_proj_weight(self, layer):
+        return self.get_layers()[layer].mlp.gate_proj.weight
+
+    def set_mlp_gate_proj_weight(self, weight, layer):
+        self.get_layers()[layer].mlp.gate_proj.weight = weight
+
+    def get_mlp_up_proj_weight(self, layer):
+        return self.get_layers()[layer].mlp.up_proj.weight
+
+    def set_mlp_up_proj_weight(self, weight, layer):
+        self.get_layers()[layer].mlp.up_proj.weight = weight
 
     def save_model(self, model_file: str):
         self.model.save_pretrained(model_file, save_compressed=True)
