@@ -4,6 +4,7 @@ import os
 
 import psutil
 import torch
+import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 from code.classes.generators.BaseModel import BaseModel
@@ -148,7 +149,8 @@ class QwenLLMModel(BaseModel):
                 all_responses.append({
                     "prompt": prompt["instruction"] if type(prompt) == dict else prompt,
                     "response": response,
-                    "category": category
+                    "category": category,
+                    "perplexity": self.__calculate_perplexity(output_ids, input_length)
                 })
 
             del inputs
@@ -156,6 +158,38 @@ class QwenLLMModel(BaseModel):
             torch.cuda.empty_cache()
 
         return all_responses
+
+    def __calculate_perplexity(self, output_ids, input_length):
+        full_sequence = output_ids.unsqueeze(0)
+
+        with torch.inference_mode():
+            model_output = self.model(
+                input_ids=full_sequence
+            )
+
+        logits = model_output.logits
+
+        # logits[t] calculates next token, shifting
+        shift_logits = logits[:, :-1, :]
+        shift_labels = full_sequence[:, 1:]
+
+        # Cross Entropy for each token
+        token_losses = F.cross_entropy(
+            shift_logits.reshape(-1, shift_logits.size(-1)),
+            shift_labels.reshape(-1),
+            reduction="none"
+        )
+
+        token_losses = token_losses.view(1, -1)
+
+        # Only calculate response
+        response_losses = token_losses[:, input_length - 1:]
+
+        # Calculate mean token loss
+        mean_loss = response_losses.mean()
+
+        # Perplexity = exp(mean cross entropy)
+        return torch.exp(mean_loss).item()
 
     def tokenize_prompts(self, prompts: list):
         formatted_prompts = [QWEN_CHAT_TEMPLATE.format(instruction=prompt) for prompt in prompts]
