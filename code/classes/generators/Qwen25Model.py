@@ -26,7 +26,7 @@ QWEN_CHAT_TEMPLATE = """<|im_start|>user
 QWEN_REFUSAL_TOKS = [40, 2121]  # ['I', 'As']
 
 
-class QwenLLMModel(BaseModel):
+class Qwen25Model(BaseModel):
     """
     Qwen2.5 model from huggingface models.
     """
