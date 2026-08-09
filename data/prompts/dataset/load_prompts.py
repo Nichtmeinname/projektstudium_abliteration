@@ -17,7 +17,7 @@ def load_prompts(n_samples: int, harm_type: str, dataset_type: str = "test", see
     """
     dataset_dir_path = os.path.dirname(os.path.realpath(__file__))
     json_file_path = os.path.join(dataset_dir_path, f"splits/{harm_type}_{dataset_type}.json")
-    with open(json_file_path, "r") as f:
+    with open(json_file_path, "r", encoding="UTF-8") as f:
         prompts = json.load(f)
 
     random.seed(seed)
