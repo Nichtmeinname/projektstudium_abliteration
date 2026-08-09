@@ -14,14 +14,16 @@ def apply_model_weight(model_base: BaseModel,
                        abliteration_method,
                        layer: int,
                        get_layer_weight,
-                       set_layer_weight):
+                       set_layer_weight,
+                       input_abliteration: bool = False):
     layer_tensor = get_layer_weight(layer)
     set_layer_weight(
         weight=torch.nn.Parameter(
             abliteration_method(
-                layer_tensor,
-                refusal_direction,
-                model_base.device
+                W=layer_tensor,
+                direction=refusal_direction,
+                device=model_base.device,
+                input_abliteration=input_abliteration
             )
         ).contiguous(),
         layer=layer
@@ -58,15 +60,15 @@ def apply_abliteration(config: Config,
     for layer in range(len(model_base.get_layers())):
         if config.modify_self_attn_q_proj:
             apply_model_weight(model_base, refusal_direction, abliteration_method, layer,
-                               model_base.get_self_attn_q_proj_weight, model_base.set_self_attn_q_proj_weight)
+                               model_base.get_self_attn_q_proj_weight, model_base.set_self_attn_q_proj_weight, True)
 
         if config.modify_self_attn_k_proj:
             apply_model_weight(model_base, refusal_direction, abliteration_method, layer,
-                               model_base.get_self_attn_k_proj_weight, model_base.set_self_attn_k_proj_weight)
+                               model_base.get_self_attn_k_proj_weight, model_base.set_self_attn_k_proj_weight, True)
 
         if config.modify_self_attn_v_proj:
             apply_model_weight(model_base, refusal_direction, abliteration_method, layer,
-                               model_base.get_self_attn_v_proj_weight, model_base.set_self_attn_v_proj_weight)
+                               model_base.get_self_attn_v_proj_weight, model_base.set_self_attn_v_proj_weight, True)
 
         if config.modify_self_attn_o_proj:
             apply_model_weight(model_base, refusal_direction, abliteration_method, layer,
@@ -78,11 +80,11 @@ def apply_abliteration(config: Config,
 
         if config.modify_mlp_gate_proj:
             apply_model_weight(model_base, refusal_direction, abliteration_method, layer,
-                               model_base.get_mlp_gate_proj_weight, model_base.set_mlp_gate_proj_weight)
+                               model_base.get_mlp_gate_proj_weight, model_base.set_mlp_gate_proj_weight, True)
 
         if config.modify_mlp_up_proj:
             apply_model_weight(model_base, refusal_direction, abliteration_method, layer,
-                               model_base.get_mlp_up_proj_weight, model_base.set_mlp_up_proj_weight)
+                               model_base.get_mlp_up_proj_weight, model_base.set_mlp_up_proj_weight, True)
 
         progress.update(task_modify_tensor, advance=1)
 
