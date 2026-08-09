@@ -5,10 +5,10 @@ CONFIG = {
         "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
     "qwen2.5-7B-Abliterated - Norm Preserving (Unethische Anfragen)": [
-        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_norm_preserving/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_norm_preserving/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmful_prompts_seed_42.csv"
     ],
     "qwen2.5-7B-Abliterated - Standard (Unethische Anfragen)": [
-        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv"
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmful_prompts_seed_42.csv"
     ]
 }
 

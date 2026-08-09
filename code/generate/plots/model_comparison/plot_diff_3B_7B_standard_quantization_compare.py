@@ -1,17 +1,11 @@
 from code.generate.plots.method.plot_refusal_scores import plot_refusal_scores, load_and_aggregate
 
 CONFIG = {
-    "qwen2.5-3B-Abliterated - Standard  (Unethische Anfragen)\nNo Quantization": [
-        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/NoQuantization/harmful_prompts_seed_42.csv"
+    "qwen2.5-3B-Abliterated - Standard  (Unethische Anfragen)": [
+        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmful_prompts_seed_42.csv"
     ],
-    "qwen2.5-3B-Abliterated - Standard  (Unethische Anfragen)\nQuantization": [
-        "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv"
-    ],
-    "qwen2.5-7B-Abliterated - Standard  (Unethische Anfragen)\nNo Quantization": [
-        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/NoQuantization/harmful_prompts_seed_42.csv"
-    ],
-    "qwen2.5-7B-Abliterated - Standard  (Unethische Anfragen)\nQuantization": [
-        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/Quantization/harmful_prompts_seed_42.csv"
+    "qwen2.5-7B-Abliterated - Standard  (Unethische Anfragen)": [
+        "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmful_prompts_seed_42.csv"
     ]
 }
 
