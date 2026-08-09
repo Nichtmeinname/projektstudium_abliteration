@@ -92,4 +92,3 @@ def plot_refusal_scores(data: dict[str, pd.Series], output_file_path: str, outpu
     save_location = os.path.join(output_file_path, output_file_name)
     plt.savefig(save_location, dpi=300)
     print(f"\nDiagramm gespeichert: {save_location}")
-    plt.show()

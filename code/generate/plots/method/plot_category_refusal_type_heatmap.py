@@ -76,4 +76,3 @@ def heatmap_category_refusal_type(model_name: str, file_path: str, save_path: st
         bbox_inches="tight"
     )
     plt.tight_layout()
-    plt.show()
