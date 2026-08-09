@@ -8,6 +8,7 @@ import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 from code.classes.generators.BaseModel import BaseModel
+from code.methods.setup_device import cleanup_gpu
 
 SAMPLE_SYSTEM_PROMPT = """You are a helpful assistant."""
 
@@ -155,7 +156,7 @@ class Qwen25Model(BaseModel):
 
             del inputs
             del outputs
-            torch.cuda.empty_cache()
+            cleanup_gpu()
 
         return all_responses
 
@@ -278,8 +279,7 @@ class Qwen25Model(BaseModel):
         del self.model
         del self.tokenizer
         gc.collect()
-        torch.cuda.empty_cache()
-        torch.cuda.synchronize()
+        cleanup_gpu()
 
         self.tokenizer = self._load_tokenizer(model_file)
         self.model = self._load_model(model_file, set_four_bit_quantization)

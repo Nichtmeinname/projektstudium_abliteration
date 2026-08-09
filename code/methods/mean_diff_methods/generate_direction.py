@@ -7,6 +7,7 @@ from torch import Tensor
 
 from code.classes.Config import Config
 from code.classes.generators.BaseModel import BaseModel
+from code.methods.setup_device import cleanup_gpu
 from code.utils.hookutils import add_hooks
 
 
@@ -91,7 +92,7 @@ def get_mean_activations(config: Config, model: BaseModel, prompts: list):
     - n_layers = number of transformer layers
     - d_model = hidden size of the model
     """
-    torch.cuda.empty_cache()
+    cleanup_gpu()
 
     positions = list(range(-len(model.get_eoi_toks()), 0))
     n_positions = len(positions)
@@ -128,7 +129,8 @@ def get_mean_diff(config: Config, model: BaseModel, harmful_train: list, harmles
     return mean_diff
 
 
-def generate_direction(config: Config, model: BaseModel, harmful_train: list, harmless_train: list, path_to_mean_diff_dir: str):
+def generate_direction(config: Config, model: BaseModel, harmful_train: list, harmless_train: list,
+                       path_to_mean_diff_dir: str):
     """
     Generate mean diffs between harmful and harmless.
     :param config: The config.

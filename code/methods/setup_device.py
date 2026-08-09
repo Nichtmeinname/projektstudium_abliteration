@@ -17,3 +17,9 @@ def setup_device():
         device = torch.device('cpu')
         print("GPU NICHT VERFÜGBAR - Verwende CPU")
     return device
+
+
+def cleanup_gpu():
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()

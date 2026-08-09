@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-from code.methods.setup_device import setup_device
+from code.methods.setup_device import setup_device, cleanup_gpu
 
 
 class RefusalDetector:
@@ -124,6 +124,6 @@ class RefusalDetector:
             del scores
             del predicted_classes
 
-            torch.cuda.empty_cache()
+            cleanup_gpu()
 
         return evaluated

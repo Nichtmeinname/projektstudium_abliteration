@@ -2,6 +2,8 @@ import gc
 
 import torch
 
+from code.methods.setup_device import cleanup_gpu
+
 
 def modify_tensor_norm_preserved(
         W: torch.Tensor,
@@ -95,8 +97,7 @@ def modify_tensor_norm_preserved(
         del W_direction, W_direction_new, W_norm, W_modified
 
         gc.collect()
-        torch.cuda.empty_cache()
-        torch.cuda.synchronize()
+        cleanup_gpu()
 
     return result.detach().clone()
 
@@ -189,7 +190,6 @@ def modify_tensor_standard(
         del intervention_normalized, projection, W_working
 
         gc.collect()
-        torch.cuda.empty_cache()
-        torch.cuda.synchronize()
+        cleanup_gpu()
 
     return result.detach().clone()

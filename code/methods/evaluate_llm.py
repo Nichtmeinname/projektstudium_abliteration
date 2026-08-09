@@ -2,11 +2,11 @@ import gc
 import os
 
 import pandas as pd
-import torch
 
 from code.classes.Config import Config
 from code.classes.RefusalDetector import RefusalDetector
 from code.classes.generators.BaseModel import BaseModel
+from code.methods.setup_device import cleanup_gpu
 from data.prompts.dataset.load_prompts import load_prompts
 
 
@@ -38,5 +38,4 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
 
     del detector
     gc.collect()
-    torch.cuda.empty_cache()
-    torch.cuda.synchronize()
+    cleanup_gpu()
