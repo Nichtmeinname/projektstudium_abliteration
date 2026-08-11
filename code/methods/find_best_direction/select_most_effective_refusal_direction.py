@@ -72,8 +72,10 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
                      mean_diffs: Float[Tensor, "n_positions n_layers d_model"], progress: Progress):
     n_pos, n_layer, _ = mean_diffs.shape
     layer_scores = {}
-    task_select_best_direction = progress.add_task("Select best refusal direction...", total=(n_pos * n_layer))
-    for pos_idx, layer_idx in product(range(-n_pos, 0), range(n_layer)):
+    max_tested_layers = int(n_layer * 0.8)
+    task_select_best_direction = progress.add_task("Select best refusal direction...",
+                                                   total=(n_pos * max_tested_layers))
+    for pos_idx, layer_idx in product(range(-n_pos, 0), range(max_tested_layers)):
         abliteration_direction = mean_diffs[pos_idx, layer_idx]
         rate = evaluate_pos_layer(
             config, model_base, abliteration_direction, harmful_val + harmless_val
@@ -82,7 +84,7 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
             layer_scores[pos_idx, layer_idx] = rate
         progress.update(task_select_best_direction, advance=1)
 
-    progress.update(task_select_best_direction, total=(n_pos * n_layer))
+    progress.update(task_select_best_direction, total=(n_pos * max_tested_layers))
     # Best layer = lowest refusal after abliteration
     best_layer = max(layer_scores, key=layer_scores.get)
     print(f"    Bester Pos/Layer: {best_layer} (Ablehnungsrate: {layer_scores[best_layer]:.2f})")
