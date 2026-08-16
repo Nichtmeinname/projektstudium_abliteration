@@ -2,12 +2,33 @@ import gc
 import os
 
 import pandas as pd
+from pandas import DataFrame
 
 from code.classes.Config import Config
 from code.classes.RefusalDetector import RefusalDetector
 from code.classes.generators.BaseModel import BaseModel
 from code.methods.setup_device import cleanup_gpu
 from data.prompts.dataset.load_prompts import load_prompts
+
+
+def print_percentage_of_response_types(df: DataFrame):
+    # Anzahl pro Response-Type
+    counts = df["response_type"].value_counts()
+
+    # Prozentualer Anteil pro Response-Type
+    percentages = (
+        df["response_type"]
+        .value_counts(normalize=True)
+        .mul(100)
+    )
+
+    # Gemeinsame Tabelle erstellen
+    response_type_stats = pd.DataFrame({
+        "count": counts,
+        "percentage": percentages
+    })
+
+    print(response_type_stats)
 
 
 def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, model_base: BaseModel, config: Config):
@@ -31,11 +52,15 @@ def evaluate_llm(harm_type: str, save_location_path: str, save_file_name: str, m
     detector = RefusalDetector()
     evaluated = detector.detect(results)
 
+    df = pd.DataFrame(evaluated)
+
+    print_percentage_of_response_types(df)
+
     # Save the results of the evaluation.
     if not os.path.exists(save_location_path):
         os.makedirs(save_location_path)
-    pd.DataFrame(evaluated).to_csv(save_location_path + save_file_name, index=False)
+    df.to_csv(save_location_path + save_file_name, index=False)
 
-    del detector
+    del detector.model, detector
     gc.collect()
     cleanup_gpu()
