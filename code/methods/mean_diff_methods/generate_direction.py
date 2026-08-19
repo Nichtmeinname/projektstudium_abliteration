@@ -72,7 +72,7 @@ def get_mean_activations(config: Config, model: BaseModel, prompts: list):
     ----------
     config: The config.
 
-    model : QwenLLMModel
+    model : BaseModel
         Generator object containing the model, tokenizer,
         and helper functions.
 
@@ -129,8 +129,8 @@ def get_mean_diff(config: Config, model: BaseModel, harmful_train: list, harmles
     return mean_diff
 
 
-def generate_direction(config: Config, model: BaseModel, harmful_train: list, harmless_train: list,
-                       path_to_mean_diff_dir: str):
+def generate_directions(config: Config, model: BaseModel, harmful_train: list, harmless_train: list,
+                        path_to_mean_diff_dir: str):
     """
     Generate mean diffs between harmful and harmless.
     :param config: The config.
