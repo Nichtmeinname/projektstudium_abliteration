@@ -4,7 +4,7 @@ import torch
 
 from code.classes.Config import Config
 from code.classes.generators.BaseModel import BaseModel
-from code.methods.mean_diff_methods.generate_direction import generate_directions
+from code.methods.mean_diff_methods.generate_directions import generate_directions
 
 
 def generate_mean_diff(config: Config, model: BaseModel, harmful_train: list, harmless_train: list):
