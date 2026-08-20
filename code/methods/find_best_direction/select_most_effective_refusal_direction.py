@@ -77,11 +77,11 @@ def select_direction(config: Config, model_base: BaseModel, harmful_val: list, h
                                                    total=(n_pos * max_tested_layers))
     for pos_idx, layer_idx in product(range(-n_pos, 0), range(max_tested_layers)):
         abliteration_direction = mean_diffs[pos_idx, layer_idx]
-        rate = evaluate_pos_layer(
+        bypass_score = evaluate_pos_layer(
             config, model_base, abliteration_direction, harmful_val + harmless_val
         )
-        if not math.isnan(rate):
-            layer_scores[pos_idx, layer_idx] = rate
+        if not math.isnan(bypass_score):
+            layer_scores[pos_idx, layer_idx] = bypass_score
         progress.update(task_select_best_direction, advance=1)
 
     progress.update(task_select_best_direction, total=(n_pos * max_tested_layers))
