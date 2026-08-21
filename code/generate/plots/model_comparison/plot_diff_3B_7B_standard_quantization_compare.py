@@ -27,7 +27,7 @@ def main():
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
         "Vergleich Qwen 3B/7B Modell-Abliterated-Standard"
-        "\nNo Quantization vs Quantization (n=" +
+        "\n(n=" +
         str(
             sum(aggregated[next(iter(aggregated))].values)
         ) + ") Anfragen",

@@ -29,7 +29,7 @@ def main():
         aggregated,
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
-        "Vergleich Qwen-7B-Instruct (nur Unethische Anfragen):\n ohne Abliteration vs. Abliteration-Methoden\n n=" + str(
+        "Vergleich Qwen-7B-Instruct (Unethische Anfragen):\n ohne Abliteration vs. Abliteration-Methoden\n n=" + str(
             sum(aggregated[
                     next(iter(aggregated))
                 ].values)

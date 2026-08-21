@@ -29,7 +29,7 @@ def main():
         aggregated,
         OUTPUT_FILE_PATH,
         OUTPUT_FILE_NAME,
-        "Vergleich Qwen-3B-Instruct-Abliterated-Standard (nur Harmlose Anfragen):\n Unterschiedlich modifizierte Gewichte\n n=" + str(
+        "Vergleich Qwen-3B-Instruct-Abliterated-Standard (Harmlose Anfragen):\n Unterschiedlich modifizierte Gewichte\n n=" + str(
             sum(aggregated[
                     next(iter(aggregated))
                 ].values)
