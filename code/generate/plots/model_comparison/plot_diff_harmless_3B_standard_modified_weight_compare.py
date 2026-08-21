@@ -1,13 +1,13 @@
 from code.generate.plots.method.plot_refusal_scores import load_and_aggregate, plot_refusal_scores
 
 CONFIG = {
-    "qwen2.5-3B-Abliterated - Modified W_O, MLP_DOWN": [
+    "Qwen2.5-3B-Abliterated - Modified W_O, MLP_DOWN": [
         "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_O___MLP_DOWN/harmless_prompts_seed_42.csv"
     ],
-    "qwen2.5-3B-Abliterated - Modified Attention Q, K, V, O, MLP UP, GATE, DOWN": [
+    "Qwen2.5-3B-Abliterated - Modified Attention Q, K, V, O, MLP UP, GATE, DOWN": [
         "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_Q_K_V_O___MLP_DOWN_GATE_UP/harmless_prompts_seed_42.csv"
     ],
-    "qwen2.5-3B-Abliterated - Modified Attention Q, K, V, MLP UP, GATE": [
+    "Qwen2.5-3B-Abliterated - Modified Attention Q, K, V, MLP UP, GATE": [
         "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct_abliterated_standard/Quantization/Modified_Self_Attn_Q_K_V___MLP_GATE_UP/harmless_prompts_seed_42.csv"
     ]
 }

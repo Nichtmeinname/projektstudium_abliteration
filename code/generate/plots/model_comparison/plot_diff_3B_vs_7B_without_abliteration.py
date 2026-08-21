@@ -1,16 +1,16 @@
 from code.generate.plots.method.plot_refusal_scores import plot_refusal_scores, load_and_aggregate
 
 CONFIG = {
-    "qwen2.5-3B (Unethische Anfragen)": [
+    "Qwen2.5-3B (Unethische Anfragen)": [
         "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
-    "qwen2.5-3B (Harmlose Anfragen)": [
+    "Qwen2.5-3B (Harmlose Anfragen)": [
         "../../../../data/responses/Qwen/Qwen2.5-3B-Instruct/Quantization/harmless_prompts_seed_42.csv"
     ],
-    "qwen2.5-7B (Unethische Anfragen)": [
+    "Qwen2.5-7B (Unethische Anfragen)": [
         "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmful_prompts_seed_42.csv"
     ],
-    "qwen2.5-7B (Harmlose Anfragen)": [
+    "Qwen2.5-7B (Harmlose Anfragen)": [
         "../../../../data/responses/Qwen/Qwen2.5-7B-Instruct/Quantization/harmless_prompts_seed_42.csv"
     ]
 }
